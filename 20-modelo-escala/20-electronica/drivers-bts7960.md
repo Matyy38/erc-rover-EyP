@@ -1,7 +1,7 @@
 ---
 titulo: Drivers BTS7960 del modelo a escala
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: pcb-modelo-escala.md, sección drivers-bts7960
 ---
 
@@ -56,7 +56,16 @@ comportamiento real de la entrada del módulo BTS7960 a 3,3 V de VCC.
 Medición concreta: disparar el osciloscopio en el flanco de EN del ESP32 y mirar R_PWM_4 y L_PWM_4
 durante todo el arranque, con el conector de potencia del driver 4 desconectado.
 
-Si se confirma, la corrección de menor costo es **invertir B0/B1 en U1** (B1 a GND, B0 a +3,3 V) e
+> **Mitigación aplicada (27-sep-2026).** Se soldó una **resistencia de pull-up en L_PWM_4** (valor
+> a asentar). Durante el arranque las dos entradas del driver 4 quedan en alto: las dos llaves
+> superiores encendidas, los dos bornes del motor al mismo potencial, motor frenado y sin corriente.
+> Es un agregado de componente, sin cortes. **V1 sigue abierto hasta verificarlo:** osciloscopio en
+> R_PWM_4 y L_PWM_4 durante el arranque, confirmando que L_PWM_4 supera el umbral alto frente al
+> pull-down interno del driver, y después, con el motor conectado, que no se mueve al encender.
+> Una consecuencia a tener en cuenta en firmware: si el ESP32 se cuelga con IO23 en alta impedancia,
+> L_PWM_4 queda en alto.
+
+La alternativa que se había propuesto era **invertir B0/B1 en U1** (B1 a GND, B0 a +3,3 V) e
 invertir esa salida PWM por hardware en la matriz de GPIO del LEDC, que no cuesta nada. Si la placa
 ya está fabricada son dos cortes y dos puentes. Conviene aplicar el mismo criterio a U4 y U5 aunque
 ahí no sea crítico, para que los tres canales queden con la misma convención.
@@ -67,8 +76,15 @@ ahí no sea crítico, para que los tres canales queden con la misma convención.
   3,3 V andan (el IN es un Schmitt trigger compatible TTL/CMOS) y ya se comprobó en banco, pero se
   está fuera de la especificación nominal del módulo. Conviene verificar la conmutación en todo el
   rango de ciclo de trabajo, no solo en un punto.
-- **Los pines IS quedan sin usar.** Decisión confirmada. Consecuencia: no hay medición de corriente
-  por rueda, solo la total.
+- **Los pines IS quedan sin usar.** Consecuencia: no hay medición de corriente por rueda desde la
+  placa, solo la total (más la rueda del ACS712, ver
+  [sensado-corriente.md](sensado-corriente.md)). **En revisión desde el 27-sep:** con el ADS1115
+  sobra un canal. Propuesta: no usarlo como canal de medición en esta campaña (la relación de IS
+  tiene mucha dispersión, a menos de ~1 A la domina el error de cero, y con PWM también necesita la
+  corrección por D), y a lo sumo cablear un canal experimental en la rueda del ACS712 para medir su
+  relación real. Si en falla IS entrega varios mA, sobre 1 k supera los 3,3 V del ADS: resistencia de
+  carga ≤ 680 Ω y 10 k en serie. Valores a confirmar en la hoja de datos. Si la relación resulta
+  estable, un segundo ADS1115 (0x49) daría las cuatro ruedas.
 - **No hay pull-down en las 8 líneas PWM.** Dependen del pull-down interno del BTS7960 durante el
   boot. Mejora barata: un pull-down de 10 k **del lado del driver** (soldado en el módulo o en el
   conector). Del lado del GPIO no protege contra un cable desconectado.

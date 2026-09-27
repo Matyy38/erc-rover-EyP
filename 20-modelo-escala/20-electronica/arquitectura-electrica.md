@@ -1,7 +1,7 @@
 ---
 titulo: Arquitectura eléctrica de la PCB del modelo
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: pcb-modelo-escala.md, sección arquitectura-electrica
 ---
 
@@ -46,12 +46,22 @@ del ESP32 y la estrategia de arranque seguro **no están acá**: viven en
                                       driver1 driver2  driver3  driver4
 ```
 
+> **Cambios del 27-sep-2026 sobre este diagrama:**
+> - **Q1 está puenteado.** El nodo A queda unido directo a la batería; la polaridad se protege con un
+>   conector que solo entra en un sentido. Ver [protecciones-desacople.md](protecciones-desacople.md).
+> - **ACS712 en la pata de motor de una rueda delantera**, entre driver y motor, fuera de la placa.
+>   Se alimenta con un regulador lineal de 5 V propio desde el riel "+5V" y se lee con un ADS1115 en
+>   el bus I2C. Ver [sensado-corriente.md](sensado-corriente.md).
+> - La batería de plomo alimenta el bus de tracción **sin regular** (10,5 a 14,4 V). Los ensayos lo
+>   compensan con lazo cerrado de velocidad y registro de tensión y ciclo de trabajo, no con un
+>   convertidor. Ver [50-ensayos/plan-de-ensayos.md](../50-ensayos/plan-de-ensayos.md).
+
 ### Rieles
 
 | Riel | Origen | Tensión real | Cargas | Protección propia |
 |---|---|---|---|---|
 | Batería | J1 | 10,5 - 14,4 V (plomo-ácido 12 V / 7 Ah) | todo | Fusible aéreo (off-board) |
-| Nodo A | salida de Q1 | Vbat - I·R_DS(on) | LM2596, bobina del relé, LED | D1 (TVS), Q1 (polaridad) |
+| Nodo A | salida de Q1 (**Q1 puenteado**: nodo A = batería) | Vbat | LM2596, bobina del relé, LED | D1 (TVS); polaridad por conector de un solo sentido |
 | +12V conmutado | contacto NO de K1, vía U3 | Vbat - caída del relé - 0,7 mΩ del sensor | 4 drivers, C2, divisor de batería | F3..F6 (uno por driver) |
 | "+5V" (nombre de red) | U2 LM2596 | **a setear en 7,2 V**, no 5 V | ESP32 VIN + 4 servos | ninguna en la entrada del ESP32 |
 | Riel de servos | +5V detrás de F2 | 7,2 V menos la caída del PTC | 4 servos | F2 (PTC rearmable) |
@@ -80,6 +90,7 @@ propio en la PDB.
 | ESP32 con Wi-Fi activo | 80 - 120 mA promedio, picos de 300 mA |
 | U3 TMCS1126 (Iq) | 11 - 14,5 mA |
 | MPU6050 | ~4 mA |
+| ADS1115 (27-sep) | <1 mA |
 | 4 encoders Hall | 40 - 80 mA (**medir**, es la incógnita grande) |
 | 8 pull-ups de 4,7 k, peor caso todos en bajo | 5,6 mA |
 | VCC lógico de los 4 BTS7960 + enables | 10 - 30 mA (**medir**) |

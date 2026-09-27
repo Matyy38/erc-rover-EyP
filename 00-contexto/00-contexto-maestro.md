@@ -1,9 +1,9 @@
 ---
 titulo: Contexto maestro — Rover ERC, subsistema de Electrónica y Potencia
 owner: Matías Bélico
-version: 2.0
+version: 2.1
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: 00-contexto-maestro.md (fuente original en 90-archivo/fuentes-originales/), reducido a índice de estado
 alcance: subsistema de potencia y electrónica
 proposito: documento raíz del repo. Estado, conflictos abiertos y próximos pasos. El detalle técnico vive en los archivos que este índice referencia.
@@ -80,19 +80,27 @@ Desarrollo y consulta consolidada a Mecánica en
 
 | Tema | Estado | Detalle |
 |---|---|---|
-| Escala, motor y qué valida el modelo | λ recalculado por la masa real. Ruedas a reimprimir cuando responda Mecánica | [10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) |
-| PCB | Fabricada y soldada. Validación parcial correcta. Testeo completo en curso | [00-estado-actual.md](../20-modelo-escala/00-estado-actual.md) |
-| Puntos V1 a V12 | Doce hipótesis de escritorio pendientes de medir, no defectos. Prioridad: V1, V2, V3 | [pendientes-de-verificacion.md](../20-modelo-escala/30-pcb/pendientes-de-verificacion.md) |
+| Escala, motor y qué valida el modelo | **Abierta:** las ruedas miden 150 mm y no corresponden a ~5,5 kg. Decidir reimprimir (recomendado) o lastrar | [10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) §0 |
+| PCB | Fabricada y soldada. Validación parcial correcta. Q1 puenteado, pull-up en L_PWM_4. Testeo completo en curso | [00-estado-actual.md](../20-modelo-escala/00-estado-actual.md) |
+| Puntos V1 a V12 | Hipótesis de escritorio pendientes de medir, no defectos. V1 mitigado sin verificar, V2 no aplica, V3 en pausa | [pendientes-de-verificacion.md](../20-modelo-escala/30-pcb/pendientes-de-verificacion.md) |
+| Ensayos | Plan rev. 2.0 (reemplaza al protocolo rev. 1.0). Ninguno corrido | [plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md) |
 | Pinout | Fuente única de verdad | [mapa-gpio.md](../20-modelo-escala/40-firmware/mapa-gpio.md) |
 
 ---
 
 ## 6. Instrumentación de ensayos — decisiones cerradas
 
-- **ADS1115** para leer el TMCS1126: el conversor interno del ESP32 es el eslabón débil.
-- **Tiro en barra como método primario**, corriente como canal redundante, en simultáneo.
-- **Sin sensor por motor:** el error de ganancia se cancela con la misma cadena de medición.
-- **Instrumento externo:** mejora opcional, ya no corrección obligatoria.
+- **ADS1115** para leer el TMCS1126: el conversor interno del ESP32 es el eslabón débil. **Comprado.**
+- **ACS712 a bordo en la pata de motor de una rueda delantera**, leído por el mismo ADS1115: respaldo
+  y validación. No es un sensor por motor para la extrapolación.
+- **Corrección por ciclo de trabajo:** con PWM el TMCS mide corriente de batería (≈ D · I_motor). Se
+  registra D por rueda y se corrige.
+- **Tiro en barra como método primario**, corriente como canal redundante, en simultáneo. Coinciden
+  en piso duro; en arena la diferencia es la resistencia de compactación. Balanza de gancho: la presta
+  la facultad.
+- **Instrumento externo:** no se construye por ahora.
+- **Sin convertidor regulado:** batería de plomo directo al bus, lazo cerrado de velocidad y registro
+  de tensión y D.
 
 Detalle en [instrumentacion.md](../20-modelo-escala/50-ensayos/instrumentacion.md) y
 [sensado-corriente.md](../20-modelo-escala/20-electronica/sensado-corriente.md).
@@ -105,25 +113,30 @@ En orden de valor por esfuerzo.
 
 | # | Acción | Costo | Desbloquea | Bloqueado por |
 |---|---|---|---|---|
-| 1 | **Ensayo de ángulo de deslizamiento** en piso duro | 0 | El μ real, que hoy bloquea la elección del motor grande | nada |
-| 2 | **Consulta única a Mecánica**: diámetro, μ, naturaleza de los 30° | 1 mensaje | λ, requisitos de torque, reimpresión de ruedas | conviene hacer #1 antes |
-| 3 | **Pesar el modelo completo** con todo montado | 0 | λ definitivo | nada |
-| 4 | **Ensayo A en banco**, fuera de la PDB, un motor, continua, multímetro en serie | 0 | K y calibración del sensor en la misma sesión | nada |
-| 5 | Cerrar V1, V2, V3 con osciloscopio | 0 | Seguridad de la placa | nada |
-| 6 | Verificar la sensibilidad real del TMCS montado con multímetro | 0 | Fondo de escala del sensor | nada |
-| 7 | Comprar ADS1115 | 3 USD | Cadena de medición | nada |
-| 8 | **Reimprimir ruedas** al diámetro correcto, y medirlas con calibre | — | Cierra la escala | **#2 y #3** |
-| 9 | Medir altura del CM y comparar con 0,3464·λ | 0 | Validez de conclusiones de estabilidad | #8 |
-| 10 | Decidir si hace falta instrumento externo | 0 a 20 USD | Ensayo D | #4 |
-| 11 | Comprar balanza de gancho | 12 USD | Tiro en barra | nada |
+| 1 | **Ensayo 0: ángulo de deslizamiento** en piso duro | 0 | El μ real, que hoy bloquea la elección del motor grande, y el ángulo del Ensayo D | superficie y rampa (Mecánica) |
+| 2 | **Consulta única a Mecánica**: diámetro, μ, naturaleza de los 30°, más los pedidos de ensayo | 1 mensaje | λ, requisitos de torque, decisión de ruedas | conviene hacer #1 antes |
+| 3 | **Decidir rueda o lastre** (ruedas de 150 mm) | 0 | Escala del modelo, Ensayo D | reunión de líderes, #2 |
+| 4 | **Pesar el modelo completo** con todo montado | 0 | λ definitivo | nada |
+| 5 | **Cablear ADS1115 y ACS712** y calibrar TMCS y ACS712 contra multímetro | ~2 USD | Cadena de medición; cierra V9, V11 y la sensibilidad del TMCS | nada |
+| 6 | Verificar V1 con osciloscopio (pull-up ya soldado) | 0 | Seguridad de la placa | nada |
+| 7 | **Ensayo A** en los 4 motores, con ACS712 y multímetro en serie | 0 | K, I₀ y R | #5 |
+| 8 | **Ensayo A'** (cadena bajo modulación), B y C | 0 | Corrección por D validada, K verificada, encoders | #7 |
+| 9 | **D0**, ensayo de método en piso duro | 0 | Método del Ensayo D depurado | #1, #5, #8 |
+| 10 | **Reimprimir ruedas** al diámetro correcto, y medirlas con calibre | — | Cierra la escala | **#2, #3 y #4** |
+| 11 | Medir altura del CM y comparar con 0,3464·λ | 0 | Validez de conclusiones de estabilidad | #10 |
 | 12 | Buscar motor de reemplazo del 42RBL04A | — | Rover final | #1 y #2 |
 | 13 | Presupuesto de corriente de los otros subsistemas | — | Batería y PDB del rover final | otros subsistemas |
 
-Los siete primeros no dependen de nadie más y cuestan entre cero y tres dólares. Los pasos 8 y 12,
-que son los que cuestan plata o tiempo de impresión, dependen de que Mecánica responda.
+Hechos desde la versión anterior: ADS1115 comprado; balanza de gancho conseguida (la presta la
+facultad); Q1 puenteado (V2 no aplica); pull-up en L_PWM_4 para V1. Descartado: instrumento externo
+por ahora.
+
+Casi todo lo que va de #4 a #9 no depende de nadie más y cuesta menos de tres dólares. Los pasos que
+cuestan plata o tiempo de impresión (#10 y #12) dependen de que Mecánica responda.
 
 Plan de ensayos del modelo en
-[plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md).
+[plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md). Versión para compartir con
+Mecánica: `Plan_Ensayos_Modelo_Rover_ERC_rev2.docx` en `Desktop\Rover` (fuera del repo).
 
 ---
 

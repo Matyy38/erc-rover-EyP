@@ -1,7 +1,7 @@
 ---
 titulo: Modelo a escala — estado actual de la placa
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: pcb-modelo-escala.md (encabezado, estado de validación y cambios respecto del PDF)
 ---
 
@@ -29,15 +29,16 @@ unidad, y funcionaron. El testeo completo está en curso.
 | Encoders y PCNT | **un canal validado**, faltan tres | [20-electronica/encoders-pcnt.md](20-electronica/encoders-pcnt.md) |
 | Drivers BTS7960 | **un puente H de cada unidad validado** | [20-electronica/drivers-bts7960.md](20-electronica/drivers-bts7960.md) |
 | Dirección swerve y servos | sin ensayar (V3 abierto) | [20-electronica/direccion-swerve-servos.md](20-electronica/direccion-swerve-servos.md) |
-| Sensado de corriente | montado, sin calibrar | [20-electronica/sensado-corriente.md](20-electronica/sensado-corriente.md) |
-| Protecciones y desacople | montado, con cinco puntos abiertos | [20-electronica/protecciones-desacople.md](20-electronica/protecciones-desacople.md) |
-| Mapa de GPIO y arranque seguro | documentado, V1 abierto | [40-firmware/mapa-gpio.md](40-firmware/mapa-gpio.md) |
+| Sensado de corriente | TMCS montado, sin calibrar. ADS1115 comprado y ACS712 a sumar en una rueda | [20-electronica/sensado-corriente.md](20-electronica/sensado-corriente.md) |
+| Protecciones y desacople | montado, Q1 puenteado, cuatro puntos abiertos | [20-electronica/protecciones-desacople.md](20-electronica/protecciones-desacople.md) |
+| Mapa de GPIO y arranque seguro | documentado, V1 mitigado con pull-up y sin verificar | [40-firmware/mapa-gpio.md](40-firmware/mapa-gpio.md) |
 
 ---
 
 ## Cambios ya confirmados respecto del PDF
 
-- El **ACS712-30A quedó cancelado**. Se reemplaza por un **TMCS1126B4** midiendo **corriente total
+- El **ACS712-30A quedó cancelado como sensor de placa** (vuelve como respaldo a bordo desde el
+  27-sep, ver abajo). Se reemplaza por un **TMCS1126B4** midiendo **corriente total
   de tracción**, no por rama.
 - **No se usa el sensado de corriente de los módulos BTS7960** (los pines `IS` quedan sin cablear).
 - El **pinout del ESP32 cambió** respecto de la tabla del PDF (ver
@@ -45,7 +46,17 @@ unidad, y funcionaron. El testeo completo está en curso.
 - Los **pull-down de 10 k en las 8 líneas PWM no existen** en la placa. Se reemplazaron por una
   estrategia distinta con conmutadores analógicos NLAS4157.
 - Los **4 PTC individuales de servo** se redujeron a **un solo PTC** para todo el riel.
-- El MOSFET de polaridad inversa es **IRF9540N**, no IRF4905.
+- El MOSFET de polaridad inversa es **IRF9540N**, no IRF4905. **Desde el 27-sep está puenteado**: la
+  polaridad se protege con un conector de un solo sentido.
+
+## Cambios del 27-sep-2026, posteriores al `.sch`
+
+- **Pull-up en L_PWM_4** (V1): componente agregado. Falta verificar con osciloscopio.
+- **Q1 puenteado** (V2 no aplica).
+- **ACS712-30A vuelve**, no como sensor de placa sino como segundo sensor a bordo en la pata de motor
+  de una rueda delantera, leído por un **ADS1115** en el bus I2C junto al TMCS.
+- **Ruedas del modelo: 150 mm de diámetro**, no 102 mm. Abre la decisión de escala en
+  [10-metodologia-similitud.md](10-metodologia-similitud.md) §0.
 
 Los motivos de cada descarte están en
 [00-contexto/04-decisiones-descartadas.md](../00-contexto/04-decisiones-descartadas.md).

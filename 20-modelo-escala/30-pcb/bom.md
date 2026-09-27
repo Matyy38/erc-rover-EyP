@@ -1,7 +1,7 @@
 ---
 titulo: BOM de la PCB del modelo
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: pcb-modelo-escala.md, sección bom
 ---
 
@@ -17,7 +17,7 @@ fuente: pcb-modelo-escala.md, sección bom
 | U3 | **TMCS1126B4** | SOIC-10 DVG | sensor de corriente total de tracción, 100 mV/A |
 | U4 | NLAS4157 | SOT-363 | conmutador de Servo1, aísla IO0 |
 | U5 | NLAS4157 | SOT-363 | conmutador de Servo3, aísla IO15 |
-| Q1 | IRF9540N | TO-220 vertical | polaridad inversa (ver V2) |
+| Q1 | IRF9540N | TO-220 vertical | polaridad inversa. **Puenteado desde el 27-sep, no se usa** |
 | K1 | RAYEX-L90S (relé automotriz 12 V) | THT SPDT | corte de la rama de tracción |
 | D1 | SM6T15A | SMB | TVS en el nodo A (ver V5) |
 | D2 | BAT54S | SOT-23 | clamp doble Schottky en la entrada de ADC de batería |
@@ -74,6 +74,19 @@ Parte del diseño aunque se monten fuera de la PCB:
 - 1 x portafusible aéreo + fusible general.
 - 1 x seta de emergencia NC de 40 mm con retención.
 - Punteras tubulares para todos los cables de potencia multifilares.
+
+### Agregados del 27-sep-2026
+
+| Ítem | Tipo de cambio | Estado |
+|---|---|---|
+| Resistencia de pull-up en L_PWM_4 (V1) | componente agregado, sin cortes | soldada; **valor a asentar** |
+| Puente sobre Q1 | puente | hecho |
+| Módulo ADS1115 (16 bits, I2C, 0x48) | fuera de placa, en el bus I2C de J3 | comprado |
+| Módulo ACS712-30A | fuera de placa, en la pata de motor de una rueda delantera | disponible |
+| Regulador lineal de 5 V para el ACS712 (78L05 o AMS1117-5.0) con sus capacitores | fuera de placa | a comprar (~1 USD) |
+| Mazo en Y para J3 (Molex KK-254, 4 vías) | mazo | a armar |
+| Cable trenzado con masa desde Vout_CS (pad de C8 o pin IO33) a AIN0 | agregado de cable, sin cortes | a hacer |
+| 2 × 10 k serie en AIN1 y AIN3; divisor 1:2 para AIN2 | fuera de placa | a comprar |
 
 ---
 

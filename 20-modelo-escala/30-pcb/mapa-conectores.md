@@ -1,7 +1,7 @@
 ---
 titulo: Mapa de conectores de la PCB del modelo
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: pcb-modelo-escala.md, sección mapa-conectores
 ---
 
@@ -18,7 +18,7 @@ su justificación están en [40-firmware/mapa-gpio.md](../40-firmware/mapa-gpio.
 |---|---|---|---|---|---|---|---|---|---|
 | J1 | Alimentacion | 2 | Phoenix MSTBA 2,5 horizontal, 5,08 mm | Batería + (a Q1.D) | GND | — | — | 12 A | hasta 22 A en bloqueo total. Ver V4 |
 | J2 | E-Stop | 2 | Molex KK-254 | del nodo A (post JP1) | a bobina K1.A2 | — | — | 3-4 A | ~150 mA (solo bobina) |
-| J3 | MPU6050 | 4 | Molex KK-254 | +3,3 V | GND | SCL | SDA | 3-4 A | pocos mA |
+| J3 | MPU6050 (y ADS1115 desde el 27-sep, por mazo en Y) | 4 | Molex KK-254 | +3,3 V | GND | SCL | SDA | 3-4 A | pocos mA |
 | J4 | 12v_driver_2 | 2 | Molex KK-254 | +12 V tras F3 | GND | — | — | 3-4 A | 5,5 A de pico. Ver V4 |
 | J5 | 12v_driver_3 | 2 | Molex KK-254 | +12 V tras F4 | GND | — | — | 3-4 A | 5,5 A de pico |
 | J6 | 12v_driver_1 | 2 | Molex KK-254 | +12 V tras F5 | GND | — | — | 3-4 A | 5,5 A de pico |

@@ -1,18 +1,82 @@
 ---
 titulo: Instrumentación de ensayos del modelo a escala
 estado: vigente
-fecha: 2026-09-16
-fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §2, §3.3, §3.4 y riesgos de medición de §5
+fecha: 2026-09-27
+fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §2, §3.3, §3.4 y riesgos de medición de §5; decisiones del 27-sep-2026 (ADS1115 comprado, ACS712 a bordo)
 ---
 
 # Instrumentación de ensayos
 
-**El sensor de corriente por motor no es necesario.** El sensor general alcanza, siempre que la
-calibración y el ensayo se hagan con la misma cadena de medición: el error de ganancia se cancela
-solo.
+**El sensor de corriente por motor no es necesario para la extrapolación.** El sensor general
+alcanza, siempre que la calibración y el ensayo se hagan con la misma cadena de medición: el error de
+ganancia se cancela solo. Desde el 27-sep se suma un **ACS712 a bordo en una rueda**, no porque haga
+falta un sensor por motor, sino como respaldo y para validar la corrección por ciclo de trabajo
+(ver abajo).
 
-El montaje del sensor de a bordo y qué mide exactamente están en
+El montaje del sensor de a bordo, qué mide exactamente y el cableado del ACS712 están en
 [20-electronica/sensado-corriente.md](../20-electronica/sensado-corriente.md).
+
+---
+
+## Cadena adoptada (27-sep-2026)
+
+Todo se lee por I2C con un solo ADS1115 a bordo. No hay instrumento externo con un segundo
+microcontrolador.
+
+| Instrumento | Dónde | Qué mide | Rol |
+|---|---|---|---|
+| TMCS1126B4 (placa) | entre relé y fusibles de drivers | corriente de batería de los 4 drivers | canal principal del Ensayo D |
+| ACS712-30A (a bordo) | pata de motor de **una rueda delantera**, entre driver y motor | corriente real de ese motor, con signo | respaldo; misma cadena en A y D; valida la corrección por D |
+| ADS1115 (a bordo) | bus I2C de J3, junto al MPU6050 | convierte ambos sensores a 16 bits | reemplaza al ADC del ESP32 |
+| Balanza de gancho | entre modelo y anclaje | fuerza de tracción | método primario en piso duro. **La presta la facultad** |
+| Multímetro 10 A | en serie, en banco | referencia | calibración |
+| Brazo + balanza de cocina | eje de salida | torque en bloqueo | Ensayo A |
+
+**Canales del ADS1115** (dirección 0x48; el MPU6050 está en 0x68):
+
+| Canal | Señal | PGA | Resolución |
+|---|---|---|---|
+| AIN0 | Vout_CS del TMCS (cable desde el pad de C8 o el pin IO33) | ±2,048 V | 0,63 mA por cuenta |
+| AIN1 | salida del ACS712, con 10 k en serie | ±4,096 V | 1,9 mA por cuenta |
+| AIN2 | alimentación del ACS712 dividida por 2 (corrige que es proporcional a su alimentación) | ±4,096 V | — |
+| AIN3 | reservado: IS del BTS7960 de la rueda del ACS712, solo si se aprueba | ±4,096 V | — |
+
+- **ADS1115 a 3,3 V.** A 5 V no reconoce el alto de 3,3 V del ESP32. Ninguna entrada puede pasar de
+  3,3 V: el ACS712 (cero en 2,5 V, 66 mV/A) en la pata de un motor va de 2,14 a 2,86 V con ±5,5 A.
+  El límite estaría en +12 A.
+- **Muestreo:** 860 muestras/s de a una conversión, alternando 3 canales → ~200 por canal. Cada
+  conversión integra ~1,2 ms (unos 23 períodos de PWM a 20 kHz): el ADS1115 promedia la modulación
+  por sí solo, cosa que el ADC del ESP32 no hace.
+- **Sin GPIO libre para ALERT/RDY:** se lee por sondeo.
+- **Por qué el ACS712 va en la pata de un motor y no en la entrada de batería:** en la pata mide la
+  corriente que produce torque, sin corrección por D, y puede quedar en la misma posición en el
+  Ensayo A y en el D. En la entrada de batería daría respaldo del total y, restando el TMCS, el
+  consumo de servos (útil para V3), pero con el mismo sesgo por D que el TMCS: no lo validaría.
+- **Delantera** porque en subida las delanteras pierden carga normal y deslizan primero.
+
+### Corrección por ciclo de trabajo
+
+Con PWM, cada driver toma de la batería aproximadamente `D · I_motor`: en el tiempo de apagado la
+corriente del motor recircula por el puente sin pasar por la batería. El TMCS está del lado de la
+batería, así que lee
+
+$$I_{TMCS} \approx \sum_i D_i \cdot I_{motor,i} \quad\Rightarrow\quad \bar I_{motor} \approx \frac{I_{TMCS}}{4\,D}\ \text{(mismo D en las 4)}$$
+
+Sin corregir, con D ≈ 0,9 hay ~10 % de sesgo, y **no se cancela con K**, porque K se mide en
+continua pura. El firmware registra el D comandado de cada rueda en cada muestra. El Ensayo A'
+confirma la corrección contra el ACS712.
+
+> **Corrección (27-sep-2026).** La versión anterior de este archivo decía que en el Ensayo D "el
+> total dividido cuatro es el promedio, que es lo que pide la extrapolación". Es el promedio de la
+> corriente de batería, no de motor: falta dividir por D.
+
+### El TMCS no puede estar en el Ensayo A
+
+El Ensayo A alimenta el motor desde la fuente de banco entre 1 y 8 V. Con esa tensión en el bus no
+arrancan ni el LM2596 ni la bobina del relé: el TMCS no ve el motor. El TMCS se calibra aparte, con
+carga resistiva a tensión nominal contra el multímetro. El argumento de cancelación del error de
+ganancia (2.2) aplica entonces **al ACS712**, que sí está en la cadena del A y del D. Para el TMCS,
+la trazabilidad pasa por el multímetro, que es la misma referencia con la que se mide K.
 
 ---
 
@@ -25,7 +89,7 @@ El montaje del sensor de a bordo y qué mide exactamente están en
 | A (constante K) | corriente de un motor bloqueado | sí | se ensaya de a un motor, en continua pura, sin modulación |
 | B (verificación por fcem) | corriente en vacío | sí | también de a un motor |
 | C (encoder) | no usa corriente | — | — |
-| D (tracción) | corriente de los cuatro | sí, con la rama aislada | el total dividido cuatro es el promedio, que es lo que pide la extrapolación |
+| D (tracción) | corriente de los cuatro | sí, con la rama aislada | el total dividido cuatro es el promedio de corriente **de batería**; dividido además por D da el de motor, que es lo que pide la extrapolación |
 
 El sensor por motor nunca fue necesario para la calibración: en el Ensayo A no hay otro motor conectado.
 
@@ -65,12 +129,13 @@ Pendiente: confirmar la sensibilidad de la variante montada. La familia va de 50
 |---|---|---|---|
 | Lectura de corriente de la fuente de banco | 0 | Ensayo A, referencia independiente | hacerlo, es gratis |
 | Multímetro en serie, escala 10 A | 0 | Ensayo A, referencia de calibración | hacerlo |
-| Balanza de gancho digital | 12 | tiro en barra (ver 2.6) | muy recomendado |
+| Balanza de gancho digital | 0 (la presta la facultad) | tiro en barra (ver 2.6) | conseguida |
 | Pinza amperométrica de continua | 40 a 70 | diagnosticar un motor sin desarmar | útil, no imprescindible |
 | Shunt 0,1 Ω + osciloscopio | ya disponible | ver la forma de onda real bajo modulación | mejor diagnóstico, solo banco |
 | Sensor por motor (ACS758, INA226) | 15 | corriente individual continua | no necesario |
+| ACS712-30A en una rueda | 0 (ya disponible) | respaldo y validación de la corrección por D | **adoptado** (ver arriba) |
 
-Jugada eficiente: durante el Ensayo A, multímetro en serie leyendo en simultáneo con el sensor de a bordo. Se obtienen dos cosas en la misma sesión: la constante K, y la calibración de dos puntos del sensor contra una referencia.
+Jugada eficiente: durante el Ensayo A, multímetro en serie leyendo en simultáneo con el ACS712. Se obtienen dos cosas en la misma sesión: la constante K, y la calibración del ACS712 contra una referencia. (La versión anterior decía "con el sensor de a bordo": el TMCS no puede estar en el Ensayo A, ver arriba.)
 
 ### 2.6 Alternativa sin corriente: tiro en barra
 
@@ -84,6 +149,15 @@ Desventajas: es un ensayo estático, no captura comportamiento dinámico ni trep
 
 **Recomendación: tiro en barra como método primario y corriente como canal redundante, medidos en simultáneo.** Si coinciden dentro del 15%, se obtiene una validación cruzada que ningún ensayo individual da. Además el tiro en barra calibra el método por corriente en condiciones reales de tracción, no en banco bloqueado.
 
+En rampa, con el anclaje abajo: $T_{total} = (F_{medida} + m\,g\,\sin\theta)\cdot R_{rueda}$.
+
+**El criterio del 15% vale en piso duro, no en arena** (aclaración del 27-sep). La balanza mide la
+fuerza que sobra después de vencer la resistencia de compactación; la corriente mide el torque total
+que entregan las ruedas. En piso duro la diferencia es la resistencia a la rodadura, chica. En arena
+la diferencia **es** la resistencia de compactación, y es un dato, no un error:
+
+$$F_{compactación} \approx \frac{T_{corriente}}{R} - F_{barra} - m\,g\,\sin\theta$$
+
 ---
 
 ## Instrumento externo: de corrección obligatoria a mejora opcional
@@ -96,6 +170,10 @@ Desventajas: es un ensayo estático, no captura comportamiento dinámico ni trep
 >
 > El instrumento externo **pasa a ser una mejora de calidad de ensayo**, no una corrección. Las
 > razones que lo justifican por sí mismas, abajo, siguen todas en pie.
+>
+> **Decisión (27-sep-2026): no se construye por ahora.** Se adoptó la alternativa barata (ADS1115 a
+> bordo) y el ACS712 también va a bordo, leído por el mismo ADS1115. Si el D0 muestra muestras
+> perdidas o degradación del lazo de control, se retoma esta sección.
 
 ### 3.3 Por qué el instrumento externo es buena idea más allá de la limitación
 
