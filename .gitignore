@@ -1,0 +1,9 @@
+# Basura de Windows
+Thumbs.db
+desktop.ini
+
+# Archivos temporales de Office (se crean al abrir el .pptx)
+~$*
+
+# Configuración local de Claude Code
+.claude/settings.local.json
