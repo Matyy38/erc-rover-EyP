@@ -93,8 +93,9 @@ superadas, incluidas las fuentes originales de la migración.
 - **La placa ya está fabricada y soldada.** Cualquier propuesta de cambio tiene que decir si es un
   corte y un puente, un componente a reemplazar, o un rediseño. El costo de la corrección importa
   tanto como su corrección técnica.
-- **Los archivos de KiCad no viven acá.** Se procesan en una conversación y el resultado se asienta
-  en markdown. Si necesitás el esquemático, pedilo.
+- **Los archivos de KiCad están en `pcb_V1/` solo para que el equipo los descargue.** El análisis ya
+  se hizo y vive en los markdown de `20-modelo-escala/`. No los abras ni los revises salvo pedido
+  explícito.
 - Antes de crear un archivo nuevo, buscá si el tema ya tiene lugar en el árbol.
 - Frontmatter con `titulo`, `estado`, `fecha` en cada archivo.
 

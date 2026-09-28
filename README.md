@@ -1,7 +1,7 @@
 ---
 titulo: Rover ERC — subsistema de Electrónica y Potencia
 estado: vigente
-fecha: 2026-09-27
+fecha: 2026-09-28
 fuente: migracion.md (árbol y mapeo de los cuatro documentos fuente)
 ---
 
@@ -60,10 +60,12 @@ rover-erc/
 │       └── plan-de-ensayos.md
 ├── 30-componentes/
 ├── 40-proveedores-costos/
-└── 90-archivo/
-    ├── analisis-sensado-superado.md
-    ├── migracion-2026-09-16.md
-    └── fuentes-originales/
+├── 90-archivo/
+│   ├── analisis-sensado-superado.md
+│   ├── migracion-2026-09-16.md
+│   └── fuentes-originales/
+├── audiovisual-presentacion/
+└── pcb_V1/
 ```
 
 ---
@@ -122,6 +124,14 @@ rover-erc/
 | [90-archivo/migracion-2026-09-16.md](90-archivo/migracion-2026-09-16.md) | Plan con el que se armó este árbol a partir de los cuatro documentos fuente. |
 | [90-archivo/fuentes-originales/README.md](90-archivo/fuentes-originales/README.md) | Los cuatro documentos previos a la migración, sin tocar. |
 
+### Material para el equipo
+
+| Archivo | Qué tiene |
+|---|---|
+| [audiovisual-presentacion/guia-ingreso-EyP-2026-09.docx](audiovisual-presentacion/guia-ingreso-EyP-2026-09.docx) | Guía de ingreso: resumen del repo para ponerse al día. Corte al 28-sep-2026; si no coincide con el repo, manda el repo. |
+| [audiovisual-presentacion/presentacion-ingreso-EyP-2026-09.pptx](audiovisual-presentacion/presentacion-ingreso-EyP-2026-09.pptx) | Presentación de ingreso al subsistema. |
+| [pcb_V1/](pcb_V1/) | Proyecto de KiCad de la placa del modelo, para descargar. El análisis está en `20-modelo-escala/`. |
+
 ---
 
 ## Reglas de trabajo sobre el repo
@@ -132,8 +142,8 @@ rover-erc/
   resultado de la medición.
 - **La placa ya está fabricada y soldada.** Toda propuesta de cambio dice si es un corte y un puente,
   un componente a reemplazar, o un rediseño.
-- **Los archivos de KiCad no viven acá.** Se procesan en una conversación y el resultado se asienta
-  en markdown.
+- **Los archivos de KiCad están en `pcb_V1/` para descargar.** Lo que salió de analizarlos está
+  asentado en markdown: los datos se buscan ahí.
 - **Cada dato técnico tiene un solo dueño.** El contexto maestro es un índice de estado: resume y
   enlaza, no copia números. Si hay diferencia, manda el archivo de detalle.
 - **`90-archivo/` es historia.** No se usa como fuente.
@@ -145,7 +155,7 @@ rover-erc/
 - Frontmatter YAML con `titulo`, `estado`, `fecha` y `fuente` en cada archivo.
 - Enlaces markdown relativos, nunca wikilinks.
 - Entre 40 y 400 líneas por archivo de contenido. Por debajo de 40, fusionar con el contiguo.
-- **Los archivos de KiCad no se versionan.** Se procesan en una conversación y el resultado se
-  documenta acá.
+- **Los archivos de KiCad se versionan en `pcb_V1/` solo para descarga.** Lo que sale de
+  analizarlos se documenta en markdown.
 - Registro de decisiones = tabla de descartados, no ADR formales.
 - Dentro de tablas, decimales en texto plano con coma. LaTeX solo fuera de tablas.
