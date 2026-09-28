@@ -1,7 +1,7 @@
 ---
 titulo: Modelo a escala — estado actual de la placa
 estado: vigente
-fecha: 2026-09-27
+fecha: 2026-09-28
 fuente: pcb-modelo-escala.md (encabezado, estado de validación y cambios respecto del PDF)
 ---
 
@@ -13,8 +13,8 @@ planificación del 17-ago-2026 dice otra cosa, manda el `.sch` y se aclara la di
 - Fuente primaria: `PCB_modelo.kicad_sch` (KiCad 9.0, hoja A3).
 - Fuente secundaria: `Modelo_a_escala_ROVER.pdf` (17-ago-2026) — **obsoleto donde contradiga al
   `.sch`**.
-- Los archivos de KiCad no viven en el repo: se procesan en una conversación y el resultado se
-  asienta en markdown.
+- Los archivos de KiCad están en [`pcb_V1/`](../pcb_V1/) para descargar. Lo que salió de analizarlos
+  está en estos markdown.
 
 ---
 
