@@ -1,7 +1,7 @@
 ---
 titulo: Rover ERC — subsistema de Electrónica y Potencia
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: migracion.md (árbol y mapeo de los cuatro documentos fuente)
 ---
 
