@@ -1,18 +1,24 @@
 ---
 titulo: Protecciones y desacople de la PCB del modelo
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: pcb-modelo-escala.md, sección protecciones-desacople
 ---
 
 # Protecciones y desacople
+
+> **Cambio (27-sep-2026): Q1 quedó puenteado y no se usa.** La protección contra polaridad inversa
+> pasa a ser un conector que solo entra en un sentido: es la alternativa que el propio PDF mencionaba
+> (ver más abajo). V2 deja de aplicar. Lo que se pierde es la protección contra el error de conectar
+> con cables sueltos o pinzas: **nunca alimentar la placa si no es por ese conector**. La protección
+> contra cortocircuito sigue siendo el fusible general. El análisis de Q1 queda abajo como registro.
 
 ### Capas de protección
 
 | Capa | Componente | Qué protege |
 |---|---|---|
 | Fusible general | aéreo, off-board | cableado de batería |
-| Polaridad inversa | Q1 IRF9540N + R14 10 k + D4 zener 16 V | toda la placa |
+| Polaridad inversa | ~~Q1 IRF9540N + R14 10 k + D4 zener 16 V~~ **Q1 puenteado.** Conector de un solo sentido | toda la placa |
 | Sobretensión | D1 SM6T15A en el nodo A | toda la placa |
 | Corte de emergencia | J2 (seta NC) -> bobina K1 -> contacto NO | rama de tracción |
 | Antirretorno de bobina | D3 en antiparalelo con la bobina | contactos de la seta |

@@ -1,7 +1,7 @@
 ---
 titulo: Conflictos abiertos con Mecánica
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: 00-contexto-maestro.md §4 + requisitos-motor-rover-real.md (conflicto μ/pendiente)
 ---
 
@@ -36,10 +36,15 @@ Cada valor arrastra su propio par de cálculos en los documentos de Mecánica: l
 con R = 0,175 m, y la hoja 2 con R = 0,14 m. No es que haya un cálculo con tres resultados, son tres
 cálculos consistentes cada uno con su hipótesis.
 
-**Consecuencia que todavía no está contemplada:** λ se define por el cociente de diámetros de rueda.
-El modelo va a reimprimir ruedas al diámetro que fija λ, asumiendo que el rover real es de 300 mm. Con
-los otros dos valores el diámetro correcto del modelo cambia; la tabla de equivalencias está en
+**Consecuencia sobre el modelo:** λ se define por el cociente de diámetros de rueda. Con los tres
+valores el diámetro correcto del modelo cambia; la tabla de equivalencias está en
 [10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) §3.
+
+**Actualización (27-sep-2026):** las ruedas actuales del modelo miden **150 mm**, no 102. Con 5,5 kg
+eso deja la presión de contacto entre 48 y 75 % de la correcta según el diámetro real: error del lado
+inseguro. Hay que decidir entre reimprimir ruedas (recomendado) o lastrar a 7,4–11,5 kg, y las dos
+opciones dependen de este mismo dato. Ver
+[10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) §0.
 
 **Estado: pendiente de consulta a Mecánica.** Bloquea la reimpresión de ruedas. No mandar a imprimir
 antes de tener la respuesta: son 26 mm de diferencia entre extremos y la impresión no es gratis en
@@ -104,3 +109,7 @@ mensajes sueltos:
 
 Conviene hacer primero el ensayo de ángulo de deslizamiento (conflicto 2) y llevar ese número a la
 consulta.
+
+A esas tres preguntas se suman los pedidos de los ensayos (decisión de rueda o lastre, material de la
+rueda, superficie, rampa, anclaje, lecho de arena, definición de torque umbral), listados en
+[plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md) y en el docx del plan rev. 2.0.

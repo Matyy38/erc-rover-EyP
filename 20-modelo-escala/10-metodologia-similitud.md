@@ -1,19 +1,65 @@
 ---
 titulo: Metodología de similitud y escala del modelo
 estado: vigente
-fecha: 2026-09-16
-fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §4, riesgos de escala de §5 y anexo de constantes
+fecha: 2026-09-27
+fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §4, riesgos de escala de §5 y anexo de constantes; dato de rueda de 150 mm (27-sep-2026)
 ---
 
 # Revisión de escala por la masa real de 5,5 kg
 
 **La masa real de 5,5 kg no saca al modelo de rango: mejora el margen.** Pero obliga a llevar el
-diámetro de rueda del modelo de 102 a 111 mm.
+diámetro de rueda del modelo al valor que corresponde a esa masa (111 mm con un rover real de 0,30 m).
 
-> **Nota de estado:** los valores de escala de este archivo (λ = 0,371) reemplazan los del protocolo
-> rev. 1.0 (λ = 0,34). El resto del protocolo (ensayos A, B, C, planillas, fallas típicas) sigue
-> vigente. La cadena de medición basada en INA226 también quedó reemplazada: ver
-> [50-ensayos/instrumentacion.md](50-ensayos/instrumentacion.md).
+> **Nota de estado (27-sep-2026):** las ruedas del modelo miden **150 mm**, no 102 mm como suponía
+> este archivo. La escala queda **abierta** hasta decidir rueda o lastre (§0). Los valores con
+> λ = 0,371 siguen siendo los correctos **si se reimprimen las ruedas**. El protocolo rev. 1.0
+> (λ = 0,34) quedó reemplazado por el plan rev. 2.0: ver
+> [50-ensayos/plan-de-ensayos.md](50-ensayos/plan-de-ensayos.md).
+
+---
+
+## 0. Ruedas de 150 mm: decisión pendiente
+
+λ se define por el diámetro de rueda (§3). Con ruedas de 150 mm la escala geométrica y la másica no
+coinciden:
+
+| Diámetro del rover real | λ por la rueda (150 mm) | Masa coherente (40·λ²) | Presión de contacto con 5,5 kg |
+|---|---|---|---|
+| 0,28 m | 0,536 | 11,5 kg | 48 % de la correcta |
+| 0,30 m | 0,500 | 10,0 kg | 55 % de la correcta |
+| 0,35 m | 0,429 | 7,4 kg | 75 % de la correcta |
+
+Con 5,5 kg el modelo se hunde **menos** de lo que corresponde, el término de compactación sale
+subestimado y la predicción del rover real queda **baja**. Es el error inverso al de §3 (que era
+conservador): este va del lado inseguro. **El Ensayo D definitivo en arena no se corre en este
+estado.** Los ensayos 0, A, A', B, C y D0 no dependen de la escala.
+
+| | A. Reimprimir ruedas (**recomendada**) | B. Mantener 150 mm y lastrar |
+|---|---|---|
+| Qué implica | 104 / 111 / 130 mm con 5,5 kg; 108 / 116 / 136 mm con 6,0 kg | llevar el modelo a 7,4 / 10,0 / 11,5 kg |
+| Torque y corriente por rueda | 0,25 a 0,31 N·m; 0,62 a 0,72 A | 0,48 a 0,75 N·m; 1,0 a 1,5 A |
+| Térmica del motor (continuo 1,1 a 1,65 A) | al 40–60 % | en la banda límite |
+| Servos y estructura | sin cambios | el doble de carga normal: más torque de giro en los servos (empeora V3) |
+| Costo | tiempo de impresión | lastre y posible refuerzo |
+
+Margen de velocidad de cada caso (mismo criterio que §2, generalizado al diámetro real: 1 m/s del
+rover real llevado al modelo con ω/√λ; torque del informe de Mecánica escalado con λ³):
+
+| Opción | Rover real | Masa | Rueda | T (N·m) | I (A) | rpm pedidas | rpm disponibles | Margen |
+|---|---|---|---|---|---|---|---|---|
+| Reimprimir | 0,28 m | 5,5 kg | 104 mm | 0,248 | 0,62 | 112,0 | 110,5 | −1,3 % |
+| Reimprimir | 0,30 m | 5,5 kg | 111 mm | 0,266 | 0,65 | 104,5 | 109,8 | 5,1 % |
+| Reimprimir | 0,35 m | 5,5 kg | 130 mm | 0,310 | 0,72 | 89,6 | 108,1 | 20,7 % |
+| Lastrar | 0,28 m | 11,5 kg | 150 mm | 0,748 | 1,46 | 93,2 | 91,4 | −1,9 % |
+| Lastrar | 0,30 m | 10,0 kg | 150 mm | 0,652 | 1,30 | 90,0 | 95,1 | 5,6 % |
+| Lastrar | 0,35 m | 7,4 kg | 150 mm | 0,479 | 1,01 | 83,4 | 101,7 | 22,0 % |
+
+Si el rover real resulta de 0,28 m, ninguna opción llega a la velocidad escalada (1 a 2 % corto).
+Para los ensayos de tracción, que son casi estáticos, no invalida el resultado.
+
+**Recomendación: A.** Se sacrifica esperar el diámetro real y el peso final antes de imprimir; se
+evita llevar motor, servos y estructura al límite. Condición para imprimir: diámetro real confirmado
+por Mecánica y modelo pesado con todo montado.
 
 ---
 
@@ -60,7 +106,8 @@ motores de 70 mm enfrentados necesitan 140 mm, y el ancho escalado eran 136 mm) 
 **λ se define por el diámetro de rueda, no por la masa**, porque la resistencia a la compactación
 depende del ancho de contacto y del hundimiento, que son geométricos.
 
-Con 5,5 kg y ruedas de 102 mm conviven dos escalas distintas:
+Con 5,5 kg y ruedas de 102 mm (el supuesto original; las ruedas reales son de 150 mm, ver §0)
+conviven dos escalas distintas:
 
 - λ geométrico = 102 / 300 = 0,34
 - λ másico = raíz de (5,5/40) = 0,371
@@ -128,8 +175,12 @@ tracción, pero sí cualquier conclusión sobre vuelco.
   Conviene congelar el peso antes de imprimir las ruedas definitivas, o directamente pesar el modelo
   completo con todo montado.
 - **El margen de velocidad del 5% sigue siendo estructuralmente chico.** Una caída del 8% de tensión
-  de batería se lo come entero. La alimentación por convertidor reductor regulado a 12,00 V no es
-  opcional: es lo que hace comparables dos corridas.
+  de batería se lo come entero. ~~La alimentación por convertidor reductor regulado a 12,00 V no es
+  opcional.~~ **Corrección (27-sep):** el modelo usa batería de plomo de 12 V directo al bus, sin
+  convertidor. Lo que hace comparables dos corridas pasa a ser el lazo cerrado de velocidad con margen
+  de ciclo de trabajo, el registro de tensión y D en cada muestra, arrancar con la batería en reposo
+  ≥ 12,6 V y descartar corridas con D saturado. El D0 verifica que la velocidad no mueve el umbral.
+  Ver [50-ensayos/plan-de-ensayos.md](50-ensayos/plan-de-ensayos.md).
 
 Los riesgos de medición están en [50-ensayos/instrumentacion.md](50-ensayos/instrumentacion.md).
 

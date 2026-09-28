@@ -1,16 +1,20 @@
 ---
-titulo: Sensado de corriente — TMCS1126B4
+titulo: Sensado de corriente — TMCS1126B4 y ACS712 de respaldo
 estado: vigente
-fecha: 2026-09-16
-fuente: pcb-modelo-escala.md, sección sensado-corriente
+fecha: 2026-09-27
+fuente: pcb-modelo-escala.md, sección sensado-corriente; decisiones del 27-sep-2026 (ADS1115 y ACS712)
 ---
 
 # Sensado de corriente
 
 ### Qué se eligió y por qué
 
-El ACS712-30A del PDF quedó cancelado. En su lugar hay **un TMCS1126B4** (Texas Instruments), sensor
-Hall con aislación reforzada, en encapsulado SOIC-10 ancho.
+El ACS712-30A del PDF quedó cancelado **como sensor de placa**. En su lugar hay **un TMCS1126B4**
+(Texas Instruments), sensor Hall con aislación reforzada, en encapsulado SOIC-10 ancho.
+
+> **27-sep-2026:** el ACS712-30A vuelve, con otro rol: segundo sensor a bordo, en la pata de motor de
+> una rueda, leído por el ADS1115. Ver [ACS712 de respaldo](#acs712-de-respaldo-27-sep-2026) al final
+> de este archivo.
 
 | Parámetro | Valor |
 |---|---|
@@ -43,8 +47,9 @@ Tres consecuencias:
    `I_traccion = (1,65 - Vout) / 0,1`
    Conviene confirmarlo con una carga conocida en el primer ensayo. Dar vuelta IN+/IN- no gana
    rango, porque el dispositivo es simétrico alrededor de 1,65 V.
-3. **No hay medición por rama.** Con los pines IS de los BTS7960 sin usar, no se puede estimar el
-   torque rueda por rueda desde el rover. Para el ensayo de caracterización `τ = K·(I - I0)` no
+3. **No hay medición por rama en la placa.** Con los pines IS de los BTS7960 sin usar, no se puede
+   estimar el torque rueda por rueda desde el rover (desde el 27-sep hay una rueda medida con el
+   ACS712, ver al final). Para el ensayo de caracterización `τ = K·(I - I0)` no
    molesta (ese ensayo va en banco con un motor por vez), pero sí impide validar el reparto de carga
    entre ruedas durante una trepada.
 
@@ -92,7 +97,8 @@ asumir explícitamente: **el canal analógico cubre la operación normal y el ca
 zona de falla**. Para eso hay que ajustar el umbral (V9). Alimentar el sensor con 5 V no ayuda,
 porque el techo real lo pone la entrada del ADC del ESP32 en 3,3 V.
 
-Resolución alcanzable: el ADC de 12 bits sobre 3,3 V da 0,806 mV por escalón, o sea **8 mA por
+Resolución alcanzable con el ADC interno (ya reemplazado por el ADS1115 para ensayos: 0,63 mA por
+cuenta con PGA ±2,048 V): el ADC de 12 bits sobre 3,3 V da 0,806 mV por escalón, o sea **8 mA por
 escalón**. El ruido de entrada del sensor (150 uA/√Hz) filtrado a 1,6 kHz da unos 6 mA rms, del
 mismo orden. El límite práctico va a ser la no linealidad conocida del ADC del ESP32, que hay que
 calibrar por puntos.
@@ -173,6 +179,50 @@ dominante no va a ser el sensor sino el ADC del ESP32. Procedimiento mínimo:
    decidir el promediado por software.
 4. Verificar el cero a distintas temperaturas: la deriva de offset de esta variante son 30 uV/°C
    típicos, o sea 0,3 mA/°C referido a la entrada. Despreciable.
+
+---
+
+## ACS712 de respaldo (27-sep-2026)
+
+Con el ADS1115 comprado quedan canales libres, y se suma el ACS712-30A que ya estaba disponible. Va
+**a bordo**, no como instrumento externo, y se lee por el mismo bus I2C.
+
+### Dónde va
+
+En la **pata de motor de una rueda delantera**, entre la salida del BTS7960 y el motor. Ahí mide la
+corriente real del motor, con signo, que es la que produce torque. Las dos razones:
+
+1. El TMCS está del lado de la batería y con PWM lee `D · I_motor`, no `I_motor`. El ACS712 en la
+   pata del motor valida la corrección por ciclo de trabajo. Ver
+   [50-ensayos/instrumentacion.md](../50-ensayos/instrumentacion.md).
+2. Puede quedar en la misma posición en el Ensayo A (pata del motor alimentada desde la fuente de
+   banco) y en el Ensayo D, así su error de ganancia se cancela para esa rueda. El TMCS no puede
+   estar en el Ensayo A.
+
+Delantera porque en subida pierde carga normal y desliza primero. La alternativa, en la entrada de
+batería, daba respaldo del total y consumo de servos por diferencia (útil para V3), pero con el mismo
+sesgo por D que el TMCS.
+
+### Conexión
+
+| Punto | Detalle |
+|---|---|
+| Alimentación | 5 V propios: regulador lineal pequeño (78L05 o AMS1117-5.0) desde el riel "+5V" de la placa. Aunque ese riel esté en 5 V conviene el regulador: el LM2596 conmuta y el ACS712 es proporcional a su alimentación |
+| Salida | a AIN1 del ADS1115, con 10 k en serie (limita la corriente si el ACS712 queda alimentado antes que el ADS) |
+| Referencia de alimentación | divisor 1:2 de su 5 V a AIN2, para corregir cero y ganancia |
+| Rango útil | con el ADS a 3,3 V, de −30 A a +12 A según el sentido. En la pata de un motor (±5,5 A en bloqueo) la salida va de 2,14 a 2,86 V |
+| Sensibilidad | 66 mV/A, cero en la mitad de la alimentación |
+
+El canal del TMCS va a AIN0 con un **cable desde el nodo Vout_CS** (pad de C8 o pin IO33): es un
+agregado sin cortes, y el ESP32 sigue leyendo por IO33. Mapa completo de canales en
+[50-ensayos/instrumentacion.md](../50-ensayos/instrumentacion.md). El ADS1115 comparte el I2C de J3
+con el MPU6050 ([40-firmware/mapa-gpio.md](../40-firmware/mapa-gpio.md)).
+
+### Qué no hace
+
+- No mide el total: es una rueda. La extrapolación usa el total del TMCS corregido por D.
+- No reemplaza a la protección por sobrecorriente.
+- Su cero deriva más que el del TMCS: tarar al inicio de cada sesión y leer AIN2.
 
 ---
 

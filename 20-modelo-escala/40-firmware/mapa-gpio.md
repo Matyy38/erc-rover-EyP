@@ -1,7 +1,7 @@
 ---
 titulo: Mapa de GPIO del ESP32 y arranque seguro
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-09-27
 fuente: pcb-modelo-escala.md, sección arquitectura-electrica (extraído)
 ---
 
@@ -42,9 +42,9 @@ número de pin.
 | **IO5** | 29 | -> U1.S | selector del conmutador de R_PWM_4 | strapping, arranca en ALTO |
 | IO18 | 30 | Encoder_RR_A | Entrada | pull-up 4,7 k (R8) |
 | IO19 | 31 | Encoder_RR_B | Entrada | pull-up 4,7 k (R9) |
-| IO21 | 33 | SDA | I2C hardware | sin pull-up en la placa (los pone el módulo GY-521) |
-| IO22 | 36 | SCL | I2C hardware | sin pull-up en la placa |
-| IO23 | 37 | L_PWM_4 | PWM driver 4 | nada |
+| IO21 | 33 | SDA | I2C hardware: MPU6050 (0x68) y ADS1115 (0x48) | sin pull-up en la placa (los ponen los módulos GY-521 y ADS1115, quedan en paralelo) |
+| IO22 | 36 | SCL | I2C hardware: ídem | sin pull-up en la placa |
+| IO23 | 37 | L_PWM_4 | PWM driver 4 | **pull-up agregado** (27-sep, valor a asentar), para V1 |
 | 3V3 | 1 | +3,3 V | alimentación | C15 100u + C11 1u |
 | EXT_5V | 19 | +5V | alimentación (VIN) | C9 100u + C10 1u |
 | GND | 14, 32, 38 | GND | — | — |
@@ -54,6 +54,8 @@ número de pin.
 
 **No queda ningún GPIO libre.** IO1/IO3 están tomados por la consola serie. Cualquier función nueva
 (por ejemplo leer el pin OC del sensor de corriente) requiere sacar algo o agregar un expansor I2C.
+Por eso el ADS1115 (27-sep) se lee por sondeo, sin su línea ALERT/RDY, y cuelga del mismo bus I2C
+que el MPU6050, a través de J3 con un mazo en Y.
 
 ## Estrategia de arranque seguro
 
@@ -77,7 +79,7 @@ En la placa, B1 va a +3,3 V y B0 a GND en los tres, o sea que la salida A copia 
 |---|---|---|---|
 | U4 | IO0 | Servo1 | señal en 3,3 V continuos. Sin pulso PWM válido el servo no se mueve |
 | U5 | IO15 | Servo3 | ídem |
-| U1 | IO5 | R_PWM_4 | entrada del BTS7960 en alto. **A verificar con osciloscopio (V1)** |
+| U1 | IO5 | R_PWM_4 | entrada del BTS7960 en alto. Con el pull-up agregado en L_PWM_4 (IO23), las dos entradas quedan en alto y el motor 4 queda frenado. **A verificar con osciloscopio (V1)** |
 
 ---
 
