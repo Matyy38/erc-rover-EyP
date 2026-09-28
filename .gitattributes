@@ -1,0 +1,2 @@
+# Los .bat necesitan fin de línea de Windows: con LF, cmd rompe los goto y las etiquetas
+*.bat text eol=crlf
