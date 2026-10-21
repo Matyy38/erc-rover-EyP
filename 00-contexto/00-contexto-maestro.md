@@ -81,7 +81,7 @@ Desarrollo y consulta consolidada a Mecánica en
 | Tema | Estado | Detalle |
 |---|---|---|
 | Escala, motor y qué valida el modelo | **Abierta:** las ruedas miden 150 mm y no corresponden a ~5,5 kg. Decidir reimprimir (recomendado) o lastrar | [10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) §0 |
-| PCB | Fabricada y soldada. Los 4 canales de puente H validados (8-oct); un módulo BTS7960 falló. Segundo LM2596 para servos, cables de potencia soldados, ADS1115 y ACS712 montados sin probar. A verificar si el riel de servos cae con la seta | [00-estado-actual.md](../20-modelo-escala/00-estado-actual.md) |
+| PCB | Fabricada y soldada. Los 4 canales de puente H validados (8-oct); un módulo BTS7960 falló. Segundo LM2596 para servos, cables de potencia soldados, ADS1115 y ACS712 montados sin probar | [00-estado-actual.md](../20-modelo-escala/00-estado-actual.md) |
 | Puntos V1 a V12 | Hipótesis de escritorio pendientes de medir, no defectos. V1 y V3 mitigados sin verificar; V2, V4 y V10 no aplican | [pendientes-de-verificacion.md](../20-modelo-escala/30-pcb/pendientes-de-verificacion.md) |
 | Ensayos | Plan rev. 2.0 (reemplaza al protocolo rev. 1.0). Ninguno corrido | [plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md) |
 | Pinout | Fuente única de verdad | [mapa-gpio.md](../20-modelo-escala/40-firmware/mapa-gpio.md) |
@@ -121,16 +121,17 @@ En este orden: nada se conecta a un riel que no se haya medido antes.
 | # | Acción | Cómo | Cierra o desbloquea |
 |---|---|---|---|
 | 1 | **Rieles con osciloscopio** | Entrada y salida de los dos LM2596. Ajustar 5 V y 7,2 V con multímetro **antes** de conectar cargas. Medir rizado en vacío y con carga, y el sobrepico al encender. Verificar con continuidad que el corte y puente separó el riel de servos del de 5 V | Base para todo lo demás |
-| 2 | **Seta** | Apretarla y medir el riel de servos, VIN del ESP32 y el bus de drivers | La duda de si los servos caen con la seta; V7 |
+| 2 | **Seta** | Apretarla y confirmar que muere el bus de drivers (servos y ESP32 siguen, por diseño) | V7 |
 | 3 | **V1** con el mismo osciloscopio | Disparo en EN del ESP32, R_PWM_4 y L_PWM_4 en J19, sin potencia en el driver | V1 |
-| 4 | **ADS1115** | Escaneo I2C (0x48 junto al MPU6050 en 0x68) y lectura de los canales contra una tensión conocida | Cadena de medición |
+| 4 | **ADS1115** | Escaneo I2C (0x48 junto al MPU6050 en 0x68), lectura de los canales contra una tensión conocida, y anotar qué señal quedó en cada canal | Cadena de medición; asignación real de canales |
 | 5 | **Sensores de corriente** | Cero del TMCS (≈ 1,65 V) y del ACS712 sin carga. Con carga conocida y multímetro en serie, 3 o 4 puntos. Signo de la lectura. VOC con multímetro | V9, V11, calibración |
 | 6 | **Módulo BTS7960 que falló** | Marcarlo. Probarlo en un canal que ya anduvo, con fuente limitada en corriente, cada sentido por separado | Reparar o reemplazar; repuesto |
 | 7 | **Encoders con PCNT** | Los tres que faltan: girar a mano, contar 5760 cuentas por vuelta de rueda, sentido de cuenta, cuentas espurias con el motor girando | Encoders validados |
 | 8 | **Cables** | Fijar primero driver ↔ rueda ↔ servo ↔ encoder y rotular. Molex con traba, par trenzado en encoders e I2C, 18 AWG con puntera a los drivers. Definir y comprar fusibles F3..F6 y general | Montaje en el modelo |
 
-Antes de la reunión hacen falta los códigos de prueba del ADS1115 y del PCNT. El del MPU6050 ya
-está en [test-mpu6050.ino](../20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino).
+Códigos de prueba: [test-ads1115.ino](../20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino)
+para el #4 y #5, y [test-mpu6050.ino](../20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino).
+Falta el del PCNT para el #7.
 
 ### 7.2 Después, en prioridad baja
 

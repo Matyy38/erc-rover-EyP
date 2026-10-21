@@ -72,9 +72,8 @@ está montada en el modelo (el rover lo tiene Mecánica).
 | ACS712 cableado | agregado fuera de placa | hecho, sin probar |
 | TMCS1126 confirmado como B4 por la marca | verificación | cerrado |
 
-**A verificar:** el equipo reporta que el riel de servos cae con la seta, pero si el segundo LM2596
-toma la entrada del mismo punto que U2, está aguas arriba del relé y no debería caer. Ver
-[20-electronica/arquitectura-electrica.md](20-electronica/arquitectura-electrica.md).
+El segundo LM2596 toma la entrada del nodo A, igual que U2: con la seta apretada, servos y ESP32
+siguen alimentados. Ver [20-electronica/arquitectura-electrica.md](20-electronica/arquitectura-electrica.md).
 
 Los motivos de cada descarte están en
 [00-contexto/04-decisiones-descartadas.md](../00-contexto/04-decisiones-descartadas.md).

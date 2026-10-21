@@ -57,6 +57,7 @@ rover-erc/
 │   │   └── pendientes-de-verificacion.md
 │   ├── 40-firmware/
 │   │   ├── mapa-gpio.md
+│   │   ├── test-ads1115/
 │   │   └── test-mpu6050/
 │   └── 50-ensayos/
 │       ├── instrumentacion.md
@@ -115,6 +116,7 @@ rover-erc/
 | [30-pcb/bom.md](20-modelo-escala/30-pcb/bom.md) | Lista por referencia, ítems sin valor definido y compras fuera de placa. |
 | [30-pcb/pendientes-de-verificacion.md](20-modelo-escala/30-pcb/pendientes-de-verificacion.md) | Los doce puntos V1 a V12, cómo se confirma cada uno y dónde se discute. |
 | [40-firmware/mapa-gpio.md](20-modelo-escala/40-firmware/mapa-gpio.md) | **Fuente única de verdad del pinout**, con la estrategia de arranque seguro. |
+| [40-firmware/test-ads1115/](20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino) | Prueba simple del ADS1115: escaneo I2C y tensión de los cuatro canales cada 0,5 s. |
 | [40-firmware/test-mpu6050/](20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino) | Prueba del MPU6050: escaneo I2C, prueba estática con pasa / no pasa, ángulos a 100 Hz. |
 | [50-ensayos/instrumentacion.md](20-modelo-escala/50-ensayos/instrumentacion.md) | Cadena de medición, tiro en barra, instrumento externo y riesgos de medición. |
 | [50-ensayos/plan-de-ensayos.md](20-modelo-escala/50-ensayos/plan-de-ensayos.md) | Ensayo de ángulo de deslizamiento, Ensayo A fuera de la PDB y próximos pasos. |

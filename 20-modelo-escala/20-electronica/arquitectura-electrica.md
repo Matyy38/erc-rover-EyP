@@ -64,11 +64,9 @@ del ESP32 y la estrategia de arranque seguro **no están acá**: viven en
 > - **J1 y J4..J7 ya no existen como conectores:** batería y alimentación de drivers van con cable
 >   de silicona soldado directo a la placa. Del lado del driver, puntera en la bornera del módulo.
 >   Ver [30-pcb/mapa-conectores.md](../30-pcb/mapa-conectores.md).
-> - **A verificar: si el riel de servos cae con la seta.** Según el equipo, los servos caen al apretar
->   la seta. Pero si el segundo LM2596 toma la entrada del mismo punto que U2 (nodo A, después de
->   JP1), queda **aguas arriba del relé** y no debería caer, igual que el ESP32. Se confirma
->   apretando la seta y midiendo el riel de servos y VIN del ESP32. Hasta entonces, el diagrama de
->   arriba manda.
+> - **La seta no corta los servos.** El segundo LM2596 toma la entrada del nodo A, después de JP1,
+>   igual que U2: queda **aguas arriba del relé**. Con la seta apretada, servos y ESP32 siguen
+>   alimentados (confirmado por el equipo el 21-oct).
 
 ### Rieles
 
@@ -88,8 +86,8 @@ Dos consecuencias arquitectónicas que conviene tener presentes:
    los drivers, pero **los servos de dirección y el ESP32 siguen alimentados**. Para el modelo a
    escala eso es deseable (la telemetría sobrevive al corte). Si en algún ensayo se necesita que los
    servos también caigan, hay que pasar el LM2596 aguas abajo del relé, y ahí se pierde la
-   telemetría post-corte. **Desde el 8-oct hay que confirmarlo midiendo** para el LM2596 de servos:
-   ver la nota de cambios arriba.
+   telemetría post-corte. Desde el 8-oct vale igual para el LM2596 de servos, que cuelga del mismo
+   punto.
 2. **V_bat se mide después del relé.** El divisor R6/R5 cuelga del riel +12 V conmutado. Con la seta
    apretada el ESP32 lee 0 V, y el corte por software a 10,5 V se dispararía como falso positivo.
    Se contempla en firmware (enmascarar el corte por baja tensión si la tensión cae de golpe a cero
