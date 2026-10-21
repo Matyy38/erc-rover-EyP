@@ -1,8 +1,8 @@
 ---
 titulo: Sensado de corriente — TMCS1126B4 y ACS712 de respaldo
 estado: vigente
-fecha: 2026-09-27
-fuente: pcb-modelo-escala.md, sección sensado-corriente; decisiones del 27-sep-2026 (ADS1115 y ACS712)
+fecha: 2026-10-21
+fuente: pcb-modelo-escala.md, sección sensado-corriente; decisiones del 27-sep-2026 (ADS1115 y ACS712); reunión de laboratorio del 8-oct-2026
 ---
 
 # Sensado de corriente
@@ -15,6 +15,11 @@ El ACS712-30A del PDF quedó cancelado **como sensor de placa**. En su lugar hay
 > **27-sep-2026:** el ACS712-30A vuelve, con otro rol: segundo sensor a bordo, en la pata de motor de
 > una rueda, leído por el ADS1115. Ver [ACS712 de respaldo](#acs712-de-respaldo-27-sep-2026) al final
 > de este archivo.
+
+> **8-oct-2026:** se confirmó por la marca del chip que la variante montada es la **B4**: 100 mV/A,
+> cero en 1,65 V. Queda cerrada la duda de sensibilidad. Hoja de datos en
+> [tmcs1126-datasheet.pdf](tmcs1126-datasheet.pdf) (SBOSAF3D). El ADS1115 quedó fijo a la placa y el
+> ACS712 cableado; ninguno de los dos sensores está calibrado ni probado todavía.
 
 | Parámetro | Valor |
 |---|---|
@@ -215,8 +220,13 @@ sesgo por D que el TMCS.
 
 El canal del TMCS va a AIN0 con un **cable desde el nodo Vout_CS** (pad de C8 o pin IO33): es un
 agregado sin cortes, y el ESP32 sigue leyendo por IO33. Mapa completo de canales en
-[50-ensayos/instrumentacion.md](../50-ensayos/instrumentacion.md). El ADS1115 comparte el I2C de J3
+[50-ensayos/instrumentacion.md](../50-ensayos/instrumentacion.md). El ADS1115 comparte el bus I2C
 con el MPU6050 ([40-firmware/mapa-gpio.md](../40-firmware/mapa-gpio.md)).
+
+**Montaje real (8-oct-2026):** el ADS1115 quedó **fijo a la placa, con los cables soldados**, y el
+ACS712 está cableado. La rueda del ACS712, su alimentación y la asignación real de canales se
+asientan al escribir el código de prueba del ADS1115: hasta entonces vale como diseño, no como
+montaje confirmado.
 
 ### Qué no hace
 

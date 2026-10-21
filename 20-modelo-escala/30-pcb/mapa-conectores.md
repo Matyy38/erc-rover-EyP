@@ -1,8 +1,8 @@
 ---
 titulo: Mapa de conectores de la PCB del modelo
 estado: vigente
-fecha: 2026-09-27
-fuente: pcb-modelo-escala.md, sección mapa-conectores
+fecha: 2026-10-21
+fuente: pcb-modelo-escala.md, sección mapa-conectores; reunión de laboratorio del 8-oct-2026
 ---
 
 # Mapa de conectores
@@ -12,17 +12,23 @@ esperada. Las columnas de pin nombran GPIO del ESP32 donde corresponde; la asign
 su justificación están en [40-firmware/mapa-gpio.md](../40-firmware/mapa-gpio.md), que es la fuente
 única de verdad del pinout.
 
+> **Cambios del 8-oct-2026.** J1 (batería) y J4..J7 (alimentación de drivers) **ya no se usan como
+> conectores**: el cable de silicona va soldado directo a la placa, para no depender de la corriente
+> nominal del conector. Del lado del driver, puntera en la bornera del módulo. El **ADS1115 quedó fijo
+> a la placa con cables soldados**, sin pasar por J3. Las filas de la tabla describen las huellas del
+> `.sch`.
+
 ### Tabla completa
 
 | Ref | Etiqueta | Vías | Huella | Pin 1 | Pin 2 | Pin 3 | Pin 4 | Corriente nominal del conector | Corriente esperada |
 |---|---|---|---|---|---|---|---|---|---|
-| J1 | Alimentacion | 2 | Phoenix MSTBA 2,5 horizontal, 5,08 mm | Batería + (a Q1.D) | GND | — | — | 12 A | hasta 22 A en bloqueo total. Ver V4 |
+| J1 | Alimentacion | 2 | Phoenix MSTBA 2,5 horizontal, 5,08 mm. **Cable soldado desde el 8-oct** | Batería + (a Q1.D) | GND | — | — | 12 A (ya no aplica) | hasta 22 A en bloqueo total |
 | J2 | E-Stop | 2 | Molex KK-254 | del nodo A (post JP1) | a bobina K1.A2 | — | — | 3-4 A | ~150 mA (solo bobina) |
-| J3 | MPU6050 (y ADS1115 desde el 27-sep, por mazo en Y) | 4 | Molex KK-254 | +3,3 V | GND | SCL | SDA | 3-4 A | pocos mA |
-| J4 | 12v_driver_2 | 2 | Molex KK-254 | +12 V tras F3 | GND | — | — | 3-4 A | 5,5 A de pico. Ver V4 |
-| J5 | 12v_driver_3 | 2 | Molex KK-254 | +12 V tras F4 | GND | — | — | 3-4 A | 5,5 A de pico |
-| J6 | 12v_driver_1 | 2 | Molex KK-254 | +12 V tras F5 | GND | — | — | 3-4 A | 5,5 A de pico |
-| J7 | 12v_driver_4 | 2 | Molex KK-254 | +12 V tras F6 | GND | — | — | 3-4 A | 5,5 A de pico |
+| J3 | MPU6050 (el ADS1115 está fijo a la placa desde el 8-oct, no pasa por J3) | 4 | Molex KK-254 | +3,3 V | GND | SCL | SDA | 3-4 A | pocos mA |
+| J4 | 12v_driver_2 | 2 | Molex KK-254. **Cable soldado desde el 8-oct** | +12 V tras F3 | GND | — | — | ya no aplica | 5,5 A de pico |
+| J5 | 12v_driver_3 | 2 | Molex KK-254. **Cable soldado desde el 8-oct** | +12 V tras F4 | GND | — | — | ya no aplica | 5,5 A de pico |
+| J6 | 12v_driver_1 | 2 | Molex KK-254. **Cable soldado desde el 8-oct** | +12 V tras F5 | GND | — | — | ya no aplica | 5,5 A de pico |
+| J7 | 12v_driver_4 | 2 | Molex KK-254. **Cable soldado desde el 8-oct** | +12 V tras F6 | GND | — | — | ya no aplica | 5,5 A de pico |
 | J8 | Encoder RR | 4 | Molex KK-254 | GND | +3,3 V | A -> IO18 | B -> IO19 | 3-4 A | pocos mA |
 | J9 | Encoder FR | 4 | Molex KK-254 | GND | +3,3 V | A -> IO36 | B -> IO39 | 3-4 A | pocos mA |
 | J10 | BTS7960_1 | 4 | Molex KK-254 | L_PWM_1 | R_PWM_1 | +3,3 V | GND | 3-4 A | pocos mA |
@@ -37,9 +43,33 @@ su justificación están en [40-firmware/mapa-gpio.md](../40-firmware/mapa-gpio.
 | J19 | BTS7960_4 | 4 | Molex KK-254 | L_PWM_4 | **R_PWM_4 (de U1)** | +3,3 V | GND | 3-4 A | pocos mA |
 | JP1 | puente | 2 | TestPoint 2 pads, 2,54 mm | nodo A | rama permanente (LM2596 + seta + bobina) | — | — | — | 2 a 3 A |
 
-### Márgenes de los conectores de potencia (V4)
+### Cable soldado en J1 y J4..J7: calibre y fusible (8-oct-2026)
 
-Los valores nominales de catálogo contra las corrientes de peor caso:
+Al sacar los conectores, el límite pasa a ser el cable, y **el fusible tiene que proteger al
+cable**. Calibre recomendado, en silicona multifilar:
+
+| Tramo | Corriente de peor caso | Calibre | Fusible que lo protege | Caída en el peor caso |
+|---|---|---|---|---|
+| Batería a placa (ex J1) | 22 A, las 4 ruedas trabadas | **14 AWG**; 16 AWG si no entra en el agujero | general: 20 A retardado con 14 AWG; 15 A con 16 AWG | 14 AWG, 1 m de ida y vuelta: 8,3 mΩ × 22 A ≈ 0,18 V |
+| Placa a driver (ex J4..J7) | 5,5 A, una rueda trabada | **18 AWG**; 16 AWG si entra | F3..F6: 7,5 A retardado | 18 AWG, 2 m de ida y vuelta (drivers a 60-100 cm): 21 mΩ/m × 2 m × 5,5 A ≈ 0,23 V |
+
+Criterio: capacidad de cable para cableado de chasis, del orden de 32 A para 14 AWG, 22 A para
+16 AWG y 16 A para 18 AWG. Es una tabla conservadora y empírica, no un dato del fabricante: la
+silicona aguanta más temperatura que el PVC, así que en la práctica hay más margen. Verificación
+por un segundo camino: la caída de tensión queda por debajo del 2 % del bus en los dos tramos, así
+que el calibre lo define el fusible y no la caída. Con 16 AWG en la batería y fusible general de
+15 A, un bloqueo simultáneo de las 4 ruedas corta el fusible; es una falla, no una condición de
+operación (en los ensayos se trabaja a ~2,6 A).
+
+**Lo que limita en la práctica es el agujero de la huella.** Valor típico, a medir con calibre: del
+orden de 1,2 mm en KK-254 y de 1,3 a 1,4 mm en el Phoenix de 5,08 mm. El 18 AWG multifilar entra
+justo en un KK-254. El 16 y el 14 AWG multifilares no entran enteros. No hay que cortar hilos para
+que entre: eso baja la sección que el fusible supone. Si no entra, conviene bajar un calibre y el
+fusible con él, según la tabla.
+
+### Márgenes de los conectores de potencia (V4) — ya no aplica (8-oct-2026)
+
+Se resolvió sacando los conectores (ver arriba). Se conserva el análisis original:
 
 - **J1, entrada de batería.** La familia Phoenix MSTB / MSTBA de 5,08 mm está especificada en 12 A
   por contacto. El bus puede pedir 22 A con las cuatro ruedas trabadas. Si el fusible general es de
@@ -63,8 +93,8 @@ Del PDF, siguen vigentes:
 
 | Tramo | Calibre | Conector |
 |---|---|---|
-| Batería a PDB | 12-14 AWG silicona | XT60 (recomendado en lugar del Phoenix actual) |
-| PDB a drivers | 14-16 AWG silicona | bornera 5,08 mm (recomendado en lugar del KK-254) |
+| Batería a PDB | 14 AWG silicona (16 AWG si no entra) | soldado a la placa desde el 8-oct |
+| PDB a drivers | 18 AWG silicona (16 AWG si entra) | soldado a la placa; puntera en la bornera del driver (8-oct) |
 | Driver a motor | 16-18 AWG silicona | terminales pala o soldadura |
 | PDB a servos | 20-22 AWG | Molex KK / conector servo |
 | Señales PWM | 22-24 AWG | Molex KK-254 |

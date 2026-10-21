@@ -1,7 +1,7 @@
 ---
 titulo: Rover ERC — subsistema de Electrónica y Potencia
 estado: vigente
-fecha: 2026-09-28
+fecha: 2026-10-21
 fuente: migracion.md (árbol y mapeo de los cuatro documentos fuente)
 ---
 
@@ -46,7 +46,9 @@ rover-erc/
 │   │   ├── drivers-bts7960.md
 │   │   ├── direccion-swerve-servos.md
 │   │   ├── sensado-corriente.md
-│   │   └── protecciones-desacople.md
+│   │   ├── protecciones-desacople.md
+│   │   ├── tmcs1126-datasheet.pdf
+│   │   └── PCNT_ESP32_Guia_Rover.pdf
 │   ├── 30-pcb/
 │   │   ├── especificacion.md
 │   │   ├── decisiones-layout.md
@@ -54,7 +56,8 @@ rover-erc/
 │   │   ├── bom.md
 │   │   └── pendientes-de-verificacion.md
 │   ├── 40-firmware/
-│   │   └── mapa-gpio.md
+│   │   ├── mapa-gpio.md
+│   │   └── test-mpu6050/
 │   └── 50-ensayos/
 │       ├── instrumentacion.md
 │       └── plan-de-ensayos.md
@@ -104,12 +107,15 @@ rover-erc/
 | [20-electronica/direccion-swerve-servos.md](20-modelo-escala/20-electronica/direccion-swerve-servos.md) | Margen del riel de servos (V3), el PTC único y el estado en el arranque. |
 | [20-electronica/sensado-corriente.md](20-modelo-escala/20-electronica/sensado-corriente.md) | TMCS1126B4: qué mide, rango, acondicionamiento, umbral de OC (V9) y calibración. |
 | [20-electronica/protecciones-desacople.md](20-modelo-escala/20-electronica/protecciones-desacople.md) | Capas de protección, polaridad inversa (V2), TVS (V5, V6), inrush del relé (V7). |
+| [20-electronica/tmcs1126-datasheet.pdf](20-modelo-escala/20-electronica/tmcs1126-datasheet.pdf) | Hoja de datos del TMCS1126 (SBOSAF3D). |
+| [20-electronica/PCNT_ESP32_Guia_Rover.pdf](20-modelo-escala/20-electronica/PCNT_ESP32_Guia_Rover.pdf) | Guía de uso del periférico PCNT del ESP32 para los encoders. |
 | [30-pcb/especificacion.md](20-modelo-escala/30-pcb/especificacion.md) | Datos generales, corrientes de diseño y anchos de pista. |
 | [30-pcb/decisiones-layout.md](20-modelo-escala/30-pcb/decisiones-layout.md) | Masas en estrella, ruteo del TMCS1126, potencia, analógico y mecánica. |
-| [30-pcb/mapa-conectores.md](20-modelo-escala/30-pcb/mapa-conectores.md) | Tabla completa de J1 a J19, márgenes de los conectores (V4) y convenciones de cableado. |
+| [30-pcb/mapa-conectores.md](20-modelo-escala/30-pcb/mapa-conectores.md) | Tabla completa de J1 a J19, calibre y fusible del cable soldado en J1 y J4..J7, y convenciones de cableado. |
 | [30-pcb/bom.md](20-modelo-escala/30-pcb/bom.md) | Lista por referencia, ítems sin valor definido y compras fuera de placa. |
 | [30-pcb/pendientes-de-verificacion.md](20-modelo-escala/30-pcb/pendientes-de-verificacion.md) | Los doce puntos V1 a V12, cómo se confirma cada uno y dónde se discute. |
 | [40-firmware/mapa-gpio.md](20-modelo-escala/40-firmware/mapa-gpio.md) | **Fuente única de verdad del pinout**, con la estrategia de arranque seguro. |
+| [40-firmware/test-mpu6050/](20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino) | Prueba del MPU6050: escaneo I2C, prueba estática con pasa / no pasa, ángulos a 100 Hz. |
 | [50-ensayos/instrumentacion.md](20-modelo-escala/50-ensayos/instrumentacion.md) | Cadena de medición, tiro en barra, instrumento externo y riesgos de medición. |
 | [50-ensayos/plan-de-ensayos.md](20-modelo-escala/50-ensayos/plan-de-ensayos.md) | Ensayo de ángulo de deslizamiento, Ensayo A fuera de la PDB y próximos pasos. |
 

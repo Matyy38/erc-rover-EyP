@@ -1,7 +1,7 @@
 ---
 titulo: Especificación de la PCB del modelo
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-10-21
 fuente: pcb-modelo-escala.md, sección especificacion
 ---
 
@@ -59,8 +59,9 @@ cambiar rápido. El costo es la inductancia del cableado, que se compensa con el
 - Dimensiones de la placa (no constan en el esquemático).
 - Número de capas y espesor.
 - Valores de F2 a F6.
-- Definir si el conector de batería sigue siendo Phoenix o pasa a XT60 (ver V4).
+- ~~Definir si el conector de batería sigue siendo Phoenix o pasa a XT60 (ver V4).~~ Resuelto el
+  8-oct-2026: cable de silicona soldado a la placa. Calibres en [mapa-conectores.md](mapa-conectores.md).
 
 ---
 
-El punto V4 (márgenes de conectores) está en [pendientes-de-verificacion.md](pendientes-de-verificacion.md); las decisiones de ruteo, en [decisiones-layout.md](decisiones-layout.md).
+El punto V4 (márgenes de conectores, no aplica desde el 8-oct) está en [pendientes-de-verificacion.md](pendientes-de-verificacion.md); las decisiones de ruteo, en [decisiones-layout.md](decisiones-layout.md).

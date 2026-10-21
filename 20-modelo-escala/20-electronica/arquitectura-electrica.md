@@ -1,8 +1,8 @@
 ---
 titulo: Arquitectura eléctrica de la PCB del modelo
 estado: vigente
-fecha: 2026-09-27
-fuente: pcb-modelo-escala.md, sección arquitectura-electrica
+fecha: 2026-10-21
+fuente: pcb-modelo-escala.md, sección arquitectura-electrica; cambios de la reunión de laboratorio del 8-oct-2026
 ---
 
 # Arquitectura eléctrica
@@ -56,15 +56,29 @@ del ESP32 y la estrategia de arranque seguro **no están acá**: viven en
 >   compensan con lazo cerrado de velocidad y registro de tensión y ciclo de trabajo, no con un
 >   convertidor. Ver [50-ensayos/plan-de-ensayos.md](../50-ensayos/plan-de-ensayos.md).
 
+> **Cambios del 8-oct-2026 sobre este diagrama:**
+> - **Segundo LM2596, solo para los servos, en 7,2 V.** Mismo módulo que U2, sin referencia en el
+>   `.sch`. Toma la entrada del mismo punto que U2 y su salida alimenta F2 → C1 → J12/J13/J14/J17.
+>   Se hizo con **corte y puente en la placa**. F2 (PTC) sigue en serie.
+> - **U2 queda en 5 V** y alimenta solo VIN del ESP32 (y por el AMS1117, todo el 3,3 V).
+> - **J1 y J4..J7 ya no existen como conectores:** batería y alimentación de drivers van con cable
+>   de silicona soldado directo a la placa. Del lado del driver, puntera en la bornera del módulo.
+>   Ver [30-pcb/mapa-conectores.md](../30-pcb/mapa-conectores.md).
+> - **A verificar: si el riel de servos cae con la seta.** Según el equipo, los servos caen al apretar
+>   la seta. Pero si el segundo LM2596 toma la entrada del mismo punto que U2 (nodo A, después de
+>   JP1), queda **aguas arriba del relé** y no debería caer, igual que el ESP32. Se confirma
+>   apretando la seta y midiendo el riel de servos y VIN del ESP32. Hasta entonces, el diagrama de
+>   arriba manda.
+
 ### Rieles
 
 | Riel | Origen | Tensión real | Cargas | Protección propia |
 |---|---|---|---|---|
-| Batería | J1 | 10,5 - 14,4 V (plomo-ácido 12 V / 7 Ah) | todo | Fusible aéreo (off-board) |
-| Nodo A | salida de Q1 (**Q1 puenteado**: nodo A = batería) | Vbat | LM2596, bobina del relé, LED | D1 (TVS); polaridad por conector de un solo sentido |
+| Batería | cable soldado en lugar de J1 (8-oct) | 10,5 - 14,4 V (plomo-ácido 12 V / 7 Ah) | todo | Fusible aéreo (off-board) |
+| Nodo A | salida de Q1 (**Q1 puenteado**: nodo A = batería) | Vbat | los dos LM2596, bobina del relé, LED | D1 (TVS); polaridad por conector de un solo sentido |
 | +12V conmutado | contacto NO de K1, vía U3 | Vbat - caída del relé - 0,7 mΩ del sensor | 4 drivers, C2, divisor de batería | F3..F6 (uno por driver) |
-| "+5V" (nombre de red) | U2 LM2596 | **a setear en 7,2 V**, no 5 V | ESP32 VIN + 4 servos | ninguna en la entrada del ESP32 |
-| Riel de servos | +5V detrás de F2 | 7,2 V menos la caída del PTC | 4 servos | F2 (PTC rearmable) |
+| "+5V" (nombre de red) | U2 LM2596 | **5 V** (8-oct) | solo ESP32 VIN | ninguna en la entrada del ESP32 |
+| Riel de servos | segundo LM2596 (8-oct) detrás de F2 | 7,2 V menos la caída del PTC | 4 servos | F2 (PTC rearmable) |
 | +3,3 V | AMS1117 del devkit ESP32 | 3,3 V | ESP32, TMCS, MPU, encoders, pull-ups, enables de los BTS, 3 NLAS | ninguna |
 
 Dos consecuencias arquitectónicas que conviene tener presentes:
@@ -74,7 +88,8 @@ Dos consecuencias arquitectónicas que conviene tener presentes:
    los drivers, pero **los servos de dirección y el ESP32 siguen alimentados**. Para el modelo a
    escala eso es deseable (la telemetría sobrevive al corte). Si en algún ensayo se necesita que los
    servos también caigan, hay que pasar el LM2596 aguas abajo del relé, y ahí se pierde la
-   telemetría post-corte.
+   telemetría post-corte. **Desde el 8-oct hay que confirmarlo midiendo** para el LM2596 de servos:
+   ver la nota de cambios arriba.
 2. **V_bat se mide después del relé.** El divisor R6/R5 cuelga del riel +12 V conmutado. Con la seta
    apretada el ESP32 lee 0 V, y el corte por software a 10,5 V se dispararía como falso positivo.
    Se contempla en firmware (enmascarar el corte por baja tensión si la tensión cae de golpe a cero
@@ -97,18 +112,17 @@ propio en la PDB.
 | 3 NLAS4157 | despreciable |
 | **Total estimado** | **150 - 250 mA, picos de 400 mA** |
 
-Con el LM2596 en 5 V: el AMS1117 disipa (5 - 3,3) x 0,25 = 0,43 W. Se banca.
+Con el LM2596 en 5 V: el AMS1117 disipa (5 - 3,3) x 0,25 = 0,43 W. Se banca. **Es el caso real
+desde el 8-oct.**
 
 Con el LM2596 en 7,2 V (la idea anotada en el esquemático para los servos): disipa
 (7,2 - 3,3) x 0,25 = 0,98 W. En SOT-223 sobre el cobre mínimo de un devkit, con resistencia térmica
-del orden de 60 a 110 °C/W, son 60 a 110 °C de salto sobre ambiente. Vale la pena medir la
-temperatura del regulador antes de dejar el sistema andando mucho rato a 7,2 V (V10).
+del orden de 60 a 110 °C/W, son 60 a 110 °C de salto sobre ambiente. Ese era el motivo de V10.
 
-Si el número da alto, tres salidas:
-- (a) Dos convertidores: uno a 5 V para el ESP32 y otro a 7,2 V solo para los servos.
-- (b) Un regulador de 3,3 V propio en la PDB desde el nodo A, alimentando el ESP32 por 3V3 directo.
-  Ojo con no alimentar simultáneamente 5V y 3V3.
-- (c) Dejar el LM2596 en 5 V y aceptar menos torque en los servos.
+De las tres salidas que se habían planteado, se eligió la **(a), dos convertidores**: U2 a 5 V para
+el ESP32 y un segundo LM2596 a 7,2 V solo para los servos (8-oct). Las descartadas eran un
+regulador de 3,3 V propio en la PDB, y dejar el único LM2596 en 5 V aceptando menos torque en los
+servos.
 
 
 ### Mapeo de pines del ESP32 y arranque seguro
@@ -136,4 +150,4 @@ V10 tocan directamente esta arquitectura.
 - Protecciones del nodo A, TVS, relé y polaridad inversa: [protecciones-desacople.md](protecciones-desacople.md)
 - Sensor de corriente en la rama conmutada: [sensado-corriente.md](sensado-corriente.md)
 - Riel de servos y margen del LM2596 (V3): [direccion-swerve-servos.md](direccion-swerve-servos.md)
-- Puntos V10 (temperatura del AMS1117) y V12 (lectura de V_bat con la seta apretada): [30-pcb/pendientes-de-verificacion.md](../30-pcb/pendientes-de-verificacion.md)
+- Puntos V10 (temperatura del AMS1117, no aplica desde el 8-oct) y V12 (lectura de V_bat con la seta apretada): [30-pcb/pendientes-de-verificacion.md](../30-pcb/pendientes-de-verificacion.md)

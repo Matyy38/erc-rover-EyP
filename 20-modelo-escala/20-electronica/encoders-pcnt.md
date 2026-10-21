@@ -1,13 +1,15 @@
 ---
 titulo: Encoders en cuadratura y periférico PCNT
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-10-21
 fuente: pcb-modelo-escala.md, sección encoders-pcnt
 ---
 
 # Encoders y PCNT
 
-Validado: se probó un encoder y funcionó correctamente.
+Validado: se probó un encoder y funcionó correctamente. Los otros tres se prueban directamente con
+el periférico PCNT (pendiente al 8-oct-2026). Guía de uso del PCNT para el rover en
+[PCNT_ESP32_Guia_Rover.pdf](PCNT_ESP32_Guia_Rover.pdf).
 
 ### Interfaz física
 

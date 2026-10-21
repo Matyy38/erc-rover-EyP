@@ -1,7 +1,7 @@
 ---
 titulo: Mapa de GPIO del ESP32 y arranque seguro
 estado: vigente
-fecha: 2026-09-27
+fecha: 2026-10-21
 fuente: pcb-modelo-escala.md, sección arquitectura-electrica (extraído)
 ---
 
@@ -55,7 +55,7 @@ número de pin.
 **No queda ningún GPIO libre.** IO1/IO3 están tomados por la consola serie. Cualquier función nueva
 (por ejemplo leer el pin OC del sensor de corriente) requiere sacar algo o agregar un expansor I2C.
 Por eso el ADS1115 (27-sep) se lee por sondeo, sin su línea ALERT/RDY, y cuelga del mismo bus I2C
-que el MPU6050, a través de J3 con un mazo en Y.
+que el MPU6050. Desde el 8-oct está fijo a la placa con cables soldados al bus, sin pasar por J3.
 
 ## Estrategia de arranque seguro
 

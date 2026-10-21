@@ -1,7 +1,7 @@
 ---
 titulo: Instrumentación de ensayos del modelo a escala
 estado: vigente
-fecha: 2026-09-27
+fecha: 2026-10-21
 fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §2, §3.3, §3.4 y riesgos de medición de §5; decisiones del 27-sep-2026 (ADS1115 comprado, ACS712 a bordo)
 ---
 
@@ -27,12 +27,13 @@ microcontrolador.
 |---|---|---|---|
 | TMCS1126B4 (placa) | entre relé y fusibles de drivers | corriente de batería de los 4 drivers | canal principal del Ensayo D |
 | ACS712-30A (a bordo) | pata de motor de **una rueda delantera**, entre driver y motor | corriente real de ese motor, con signo | respaldo; misma cadena en A y D; valida la corrección por D |
-| ADS1115 (a bordo) | bus I2C de J3, junto al MPU6050 | convierte ambos sensores a 16 bits | reemplaza al ADC del ESP32 |
+| ADS1115 (a bordo) | fijo a la placa, cables soldados (8-oct); mismo bus I2C que el MPU6050 | convierte ambos sensores a 16 bits | reemplaza al ADC del ESP32 |
 | Balanza de gancho | entre modelo y anclaje | fuerza de tracción | método primario en piso duro. **La presta la facultad** |
 | Multímetro 10 A | en serie, en banco | referencia | calibración |
 | Brazo + balanza de cocina | eje de salida | torque en bloqueo | Ensayo A |
 
-**Canales del ADS1115** (dirección 0x48; el MPU6050 está en 0x68):
+**Canales del ADS1115** (dirección 0x48; el MPU6050 está en 0x68). Asignación de diseño: la real se
+confirma al escribir el código de prueba.
 
 | Canal | Señal | PGA | Resolución |
 |---|---|---|---|
@@ -119,9 +120,13 @@ El TMCS1126 entrega tensión analógica. Leerlo con el conversor interno del ESP
 
 ### 2.4 Verificar el fondo de escala
 
-Con 100 mV/A y alimentación de 3,3 V con referencia en la mitad, el rango queda en ±16 A aproximadamente. El bloqueo simultáneo de los cuatro motores son 22 A: **el sensor satura ahí**. Para los ensayos no molesta (se trabaja a 2,6 A), pero implica que no sirve para caracterizar el bloqueo ni como base de protección por sobrecorriente.
+Con 100 mV/A y alimentación de 3,3 V con referencia en la mitad, el rango lineal queda en ±15,5 A. El bloqueo simultáneo de los cuatro motores son 22 A: **el sensor satura ahí**. Para los ensayos no molesta (se trabaja a 2,6 A), pero implica que no sirve para caracterizar el bloqueo ni como base de protección por sobrecorriente.
 
-Pendiente: confirmar la sensibilidad de la variante montada. La familia va de 50 a 400 mV/A, y eso cambia el fondo de escala por un factor 8.
+Según la hoja de datos (SBOSAF3D, rev. mayo 2026, en
+[20-electronica/tmcs1126-datasheet.pdf](../20-electronica/tmcs1126-datasheet.pdf)), la familia va de
+9,9 a 150 mV/A y el código B4 es 100 mV/A con cero en 1,65 V: rango lineal ±15,5 A con VS = 3,3 V.
+**Confirmado el 8-oct-2026 por la marca del chip: es B4.** El grado de precisión no se registró; no
+cambia nada práctico, porque la calibración contra multímetro absorbe el error de ganancia.
 
 ### 2.5 Instrumentos externos, por relación valor-costo
 

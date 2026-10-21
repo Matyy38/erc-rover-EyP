@@ -1,7 +1,7 @@
 ---
 titulo: Plan de ensayos del modelo a escala
 estado: vigente
-fecha: 2026-09-27
+fecha: 2026-10-21
 fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §6, §3.2 opción A y §2.7; protocolo de ensayos rev. 1.0 (jul-2026), corregido en rev. 2.0
 ---
 
@@ -42,8 +42,8 @@ Mecánica.
 Condiciones para energizar la tracción:
 
 - Seta verificada: con la seta apretada, circuito abierto entre nodo A y riel conmutado (V7).
-- Fusibles F3..F6 y general instalados con valor asentado. Hoy no tienen valor en el
-  [BOM](../30-pcb/bom.md); depende de V4.
+- Fusibles F3..F6 y general instalados con valor asentado. Propuesta en el
+  [BOM](../30-pcb/bom.md), según el calibre del cable soldado (8-oct).
 - **V1 verificado con osciloscopio** tras el pull-up en L_PWM_4: las dos entradas del driver 4 en
   alto durante todo el arranque, y el motor 4 quieto al encender.
 - Correspondencia driver ↔ rueda ↔ servo ↔ encoder rotulada en mazo y firmware.
