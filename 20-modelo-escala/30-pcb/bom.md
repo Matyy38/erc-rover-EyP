@@ -1,8 +1,8 @@
 ---
 titulo: BOM de la PCB del modelo
 estado: vigente
-fecha: 2026-10-21
-fuente: pcb-modelo-escala.md, sección bom; reunión de laboratorio del 8-oct-2026
+fecha: 2026-10-26
+fuente: pcb-modelo-escala.md, sección bom; reuniones de laboratorio del 8-oct y del 23-oct-2026
 ---
 
 # BOM
@@ -57,9 +57,9 @@ Referencias no usadas en el esquemático: R17 a R20 (saltadas en la numeración)
 
 | Ref | Falta | Propuesta |
 |---|---|---|
-| F3..F6 | valor | 7,5 A retardado (T), 5x20 mm. V4 ya no aplica: protege al cable de 18 AWG soldado (8-oct) |
+| F3..F6 | valor | 7,5 A retardado (T), 5x20 mm. V4 ya no aplica. Tiene que proteger al cable de ~1,5 mm que se usó (23-oct): ver [mapa-conectores.md](mapa-conectores.md) |
 | F2 | valor | el riel de servos quedó separado (8-oct). Un PTC de 3 A de mantenimiento queda en línea con la capacidad del LM2596 dedicado |
-| Fusible general | valor y ubicación | 20 A retardado con cable de 14 AWG a la batería; 15 A con 16 AWG. Ver [mapa-conectores.md](mapa-conectores.md) |
+| Fusible general | valor | en la entrada de batería, junto al XT60 (23-oct). 20 A retardado si el cable es de 14 AWG o más grueso; 15 A con 16 AWG. Ver [mapa-conectores.md](mapa-conectores.md) |
 | D3 | número de parte | cualquier rectificador de 1 A / 100 V (1N4007, S1M) |
 | D4 | número de parte | zener 16 V / 500 mW |
 
@@ -94,9 +94,18 @@ Parte del diseño aunque se monten fuera de la PCB:
 |---|---|---|
 | Segundo módulo LM2596 en 7,2 V, solo para el riel de servos (entrada del mismo punto que U2; salida a F2) | corte y puente en la placa | hecho |
 | U2 reajustado a 5 V | ajuste | hecho |
-| Cable de silicona soldado en lugar de J1 (batería) | conector reemplazado por cable | hecho; calibre a asentar (recomendado 14 AWG) |
-| Cable de silicona soldado en lugar de J4..J7 (drivers), con puntera en la bornera del driver | conector reemplazado por cable | a hacer; recomendado 18 AWG |
+| Cable de silicona soldado en lugar de J1 (batería) | conector reemplazado por cable | hecho; cable grueso que ya había, con XT60 y fusible (23-oct) |
+| Cable de silicona soldado en lugar de J4..J7 (drivers), con puntera en la bornera del driver | conector reemplazado por cable | cable de ~1,5 mm (23-oct); faltan punteras |
 | Módulo BTS7960 de repuesto | compra | recomendado: uno de los módulos falló |
+
+### Agregados del 23-oct-2026 (planificados)
+
+| Ítem | Tipo de cambio | Estado |
+|---|---|---|
+| Schottky 1N5819 (THT) o SS34 (SMA), entre la salida de U2 y VIN del ESP32 | corte y puente + diodo | a aplicar |
+| U2 reajustado a ~5,4 V | ajuste | a aplicar, después del diodo |
+| LM2596 de repuesto | compra | a comprar |
+| BTS7960 de repuesto | compra | ya listado el 8-oct; depende de la revisión del módulo |
 
 ---
 

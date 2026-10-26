@@ -1,8 +1,8 @@
 ---
 titulo: Arquitectura eléctrica de la PCB del modelo
 estado: vigente
-fecha: 2026-10-21
-fuente: pcb-modelo-escala.md, sección arquitectura-electrica; cambios de la reunión de laboratorio del 8-oct-2026
+fecha: 2026-10-26
+fuente: pcb-modelo-escala.md, sección arquitectura-electrica; reuniones de laboratorio del 8-oct y del 23-oct-2026
 ---
 
 # Arquitectura eléctrica
@@ -68,14 +68,47 @@ del ESP32 y la estrategia de arranque seguro **no están acá**: viven en
 >   igual que U2: queda **aguas arriba del relé**. Con la seta apretada, servos y ESP32 siguen
 >   alimentados (confirmado por el equipo el 21-oct).
 
+> **Problema encontrado el 23-oct-2026: retroalimentación desde el USB del ESP32.** Al enchufar el
+> USB con la batería desconectada, los LM2596 calientan mucho.
+>
+> ```
+> USB (5 V) → pin 19 del devkit (EXT_5V/VIN) → salida de U2 → [conducción inversa] → entrada de U2 = nodo A
+>                                                                       ├── bobina de K1, LED D5, C7
+>                                                                       └── entrada del LM2596 de servos → riel de servos
+> ```
+>
+> El pin 19 está unido directo a la salida de U2, sin nada que bloquee el retorno. El LM2596 no está
+> hecho para recibir tensión en la salida con la entrada sin alimentar: su hoja de datos no garantiza
+> nada en esa condición, y en la placa conduce hacia la entrada. Con el nodo A en ~4 V, el LM2596 de
+> servos queda con la llave siempre cerrada, porque su salida está ajustada en 7,2 V. Así, el USB
+> termina alimentando toda la rama permanente a través de dos módulos que trabajan fuera de su forma
+> normal.
+>
+> **Cómo se confirma:** con la batería desconectada y el USB enchufado, medir el nodo A durante no
+> más de 5 s. Si hay varios voltios, el camino es este.
+>
+> **Corrección planificada (corte y puente + diodo):** un Schottky en serie entre la salida de U2 y
+> el pin 19, con el ánodo del lado de U2. Puede ser 1N5819 (THT, más fácil para un puente) o SS34
+> (SMA). U2 se sube a ~5,4 V para que VIN quede en ~5,0 V, porque el diodo cae 0,3 a 0,4 V a la
+> corriente del ESP32. Sin ese ajuste, el AMS1117 queda con 1,3 V de margen, justo en su caída
+> mínima. Con la batería conectada, el USB y U2 alimentan VIN cada uno por su diodo, y alimenta el
+> que tenga más tensión.
+>
+> **Pendiente:** no se sabe si el devkit es oficial o un clon. Hay que medir en modo diodo entre el
+> VBUS del conector USB y el pin 5V. Si no hay diodo, U2 puede empujar corriente hacia el puerto de
+> la notebook cuando están enchufados la batería y el USB a la vez.
+>
+> **Verificación de la corrección:** USB enchufado y batería desconectada. El nodo A tiene que quedar
+> en 0 V y los módulos fríos.
+
 ### Rieles
 
 | Riel | Origen | Tensión real | Cargas | Protección propia |
 |---|---|---|---|---|
-| Batería | cable soldado en lugar de J1 (8-oct) | 10,5 - 14,4 V (plomo-ácido 12 V / 7 Ah) | todo | Fusible aéreo (off-board) |
+| Batería | cable soldado en lugar de J1 (8-oct), XT60 del lado de la batería | 10,5 - 14,4 V (plomo-ácido 12 V / 7 Ah) | todo | Fusible aéreo (off-board) |
 | Nodo A | salida de Q1 (**Q1 puenteado**: nodo A = batería) | Vbat | los dos LM2596, bobina del relé, LED | D1 (TVS); polaridad por conector de un solo sentido |
 | +12V conmutado | contacto NO de K1, vía U3 | Vbat - caída del relé - 0,7 mΩ del sensor | 4 drivers, C2, divisor de batería | F3..F6 (uno por driver) |
-| "+5V" (nombre de red) | U2 LM2596 | **5 V** (8-oct) | solo ESP32 VIN | ninguna en la entrada del ESP32 |
+| "+5V" (nombre de red) | U2 LM2596 | **5 V** (8-oct); ~5,4 V con el Schottky | solo ESP32 VIN | ninguna. Schottky hacia VIN planificado (23-oct) |
 | Riel de servos | segundo LM2596 (8-oct) detrás de F2 | 7,2 V menos la caída del PTC | 4 servos | F2 (PTC rearmable) |
 | +3,3 V | AMS1117 del devkit ESP32 | 3,3 V | ESP32, TMCS, MPU, encoders, pull-ups, enables de los BTS, 3 NLAS | ninguna |
 

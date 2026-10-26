@@ -1,7 +1,7 @@
 ---
 titulo: Mapa de GPIO del ESP32 y arranque seguro
 estado: vigente
-fecha: 2026-10-21
+fecha: 2026-10-26
 fuente: pcb-modelo-escala.md, sección arquitectura-electrica (extraído)
 ---
 
@@ -46,7 +46,7 @@ número de pin.
 | IO22 | 36 | SCL | I2C hardware: ídem | sin pull-up en la placa |
 | IO23 | 37 | L_PWM_4 | PWM driver 4 | **pull-up agregado** (27-sep, valor a asentar), para V1 |
 | 3V3 | 1 | +3,3 V | alimentación | C15 100u + C11 1u |
-| EXT_5V | 19 | +5V | alimentación (VIN) | C9 100u + C10 1u |
+| EXT_5V | 19 | +5V | alimentación (VIN). Con la corrección del 23-oct, detrás de un Schottky desde U2 (planificado) | C9 100u + C10 1u |
 | GND | 14, 32, 38 | GND | — | — |
 | EN | 2 | sin conexión | marcado no-connect | — |
 | SD0..SD3, CMD, CLK | 16-18, 20-22 | sin conexión | flash interna, marcados no-connect | correcto |

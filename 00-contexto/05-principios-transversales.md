@@ -1,7 +1,7 @@
 ---
 titulo: Principios transversales
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-10-26
 fuente: 00-contexto-maestro.md §8
 ---
 
@@ -13,7 +13,7 @@ lugar donde cada una se puso a prueba.
 
 ---
 
-## Los trece
+## Los catorce
 
 1. **La tracción es la restricción vinculante, no el par del motor.** Si el modelo predice más torque
    que el techo de tracción, no significa que hagan falta motores más grandes: significa que el rover
@@ -39,6 +39,12 @@ lugar donde cada una se puso a prueba.
     driver.
 13. **La repetibilidad del terreno domina sobre la precisión del instrumento.** El estado de
     compactación de la arena varía más entre corridas que cualquier error de medición.
+14. **Una fuente secundaria no puede llegar a la salida de un regulador.** Todo lo que alimenta un
+    nodo por un segundo camino (USB de depuración, fuente de banco) entra por un diodo, o por un
+    camino que no pueda volver hacia un convertidor. Un reductor no se diseña para bloquear
+    corriente inversa: en los sincrónicos la pasa el diodo interno del MOSFET superior, y en el
+    LM2596 se vio en la placa. Si lo alimentan desde la salida, termina alimentando todo lo que
+    cuelga de su entrada.
 
 ---
 
@@ -56,3 +62,4 @@ lugar donde cada una se puso a prueba.
 | 10 | Márgenes de J1 y J4..J7 contra el valor de los fusibles (V4) | [mapa-conectores.md](../20-modelo-escala/30-pcb/mapa-conectores.md) |
 | 11 | Criterio de búsqueda del motor de reemplazo del 42RBL04A | [candidatos-motores.md](../10-rover-final/10-locomocion/candidatos-motores.md) |
 | 13 | Ensayo de arena y repetibilidad del terreno | [plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md) |
+| 14 | Retroalimentación desde el USB del ESP32 en la PCB del modelo (23-oct) | [arquitectura-electrica.md](../20-modelo-escala/20-electronica/arquitectura-electrica.md) |

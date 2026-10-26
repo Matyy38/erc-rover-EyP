@@ -1,8 +1,8 @@
 ---
 titulo: Mapa de conectores de la PCB del modelo
 estado: vigente
-fecha: 2026-10-21
-fuente: pcb-modelo-escala.md, sección mapa-conectores; reunión de laboratorio del 8-oct-2026
+fecha: 2026-10-26
+fuente: pcb-modelo-escala.md, sección mapa-conectores; reuniones de laboratorio del 8-oct y del 23-oct-2026
 ---
 
 # Mapa de conectores
@@ -67,6 +67,20 @@ justo en un KK-254. El 16 y el 14 AWG multifilares no entran enteros. No hay que
 que entre: eso baja la sección que el fusible supone. Si no entra, conviene bajar un calibre y el
 fusible con él, según la tabla.
 
+**Lo que se usó (23-oct-2026).** Placa a drivers y la mayoría de los tramos: cable de **~1,5 mm**.
+Entrada de batería: un cable más grueso que ya había, con **XT60 y el fusible general**. Falta
+asentar si 1,5 mm es el diámetro del conductor, el diámetro exterior con la aislación, o una
+sección de 1,5 mm². La diferencia es grande:
+
+| Lectura de "1,5 mm" | Sección | Equivalente | ¿F3..F6 de 7,5 A lo protegen? |
+|---|---|---|---|
+| Diámetro del conductor | ~1,8 mm² | ~15 AWG | sí, con margen |
+| Sección de 1,5 mm² | 1,5 mm² | ~16 AWG | sí, con margen |
+| Diámetro exterior con aislación | ~0,3 mm² | ~22 AWG | **no**: ~7 A en cableado de chasis, por debajo del fusible. Habría que rehacer los tramos placa a driver con cable más grueso, porque bajar el fusible a 5 A lo haría cortar en cada bloqueo de 5,5 A |
+
+Se resuelve midiendo con calibre el conductor pelado. Lo mismo para el cable de batería: con 14 AWG
+o más, el fusible general va de 20 A retardado.
+
 ### Márgenes de los conectores de potencia (V4) — ya no aplica (8-oct-2026)
 
 Se resolvió sacando los conectores (ver arriba). Se conserva el análisis original:
@@ -93,8 +107,8 @@ Del PDF, siguen vigentes:
 
 | Tramo | Calibre | Conector |
 |---|---|---|
-| Batería a PDB | 14 AWG silicona (16 AWG si no entra) | soldado a la placa desde el 8-oct |
-| PDB a drivers | 18 AWG silicona (16 AWG si entra) | soldado a la placa; puntera en la bornera del driver (8-oct) |
+| Batería a PDB | recomendado 14 AWG silicona. Usado: cable grueso que ya había (23-oct) | XT60 con fusible del lado de la batería; soldado a la placa |
+| PDB a drivers | recomendado 18 AWG silicona. Usado: ~1,5 mm (23-oct), a asentar | soldado a la placa; puntera en la bornera del driver |
 | Driver a motor | 16-18 AWG silicona | terminales pala o soldadura |
 | PDB a servos | 20-22 AWG | Molex KK / conector servo |
 | Señales PWM | 22-24 AWG | Molex KK-254 |
@@ -103,6 +117,11 @@ Del PDF, siguen vigentes:
 
 Prohibido protoboard y cables Dupont en cualquier tramo: el desgaste por vibración (*fretting*)
 genera contactos intermitentes imposibles de diagnosticar después.
+
+**Estado al 23-oct-2026:** los mazos de señal y potencia con conectores con traba están casi
+terminados. Faltan los largos definitivos, las punteras y los cables a los motores, porque los
+motores los tiene Mecánica. La correspondencia driver ↔ rueda ↔ servo ↔ encoder se fija y se
+rotula cuando estén los motores.
 
 ---
 

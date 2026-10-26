@@ -1,7 +1,7 @@
 ---
 titulo: Rover ERC — subsistema de Electrónica y Potencia
 estado: vigente
-fecha: 2026-10-21
+fecha: 2026-10-26
 fuente: migracion.md (árbol y mapeo de los cuatro documentos fuente)
 ---
 
@@ -85,7 +85,7 @@ rover-erc/
 | [02-filosofia-de-diseno.md](00-contexto/02-filosofia-de-diseno.md) | Las reglas no negociables y dónde se aplica cada una. |
 | [03-conflictos-abiertos.md](00-contexto/03-conflictos-abiertos.md) | Los tres conflictos que bloquean decisiones y la consulta consolidada a Mecánica. |
 | [04-decisiones-descartadas.md](00-contexto/04-decisiones-descartadas.md) | Tabla única de lo que se evaluó y no quedó, con el motivo. |
-| [05-principios-transversales.md](00-contexto/05-principios-transversales.md) | Las trece reglas ganadas en el proyecto que aplican más allá de su caso. |
+| [05-principios-transversales.md](00-contexto/05-principios-transversales.md) | Las catorce reglas ganadas en el proyecto que aplican más allá de su caso. |
 
 ### 10-rover-final
 
