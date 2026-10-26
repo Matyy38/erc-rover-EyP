@@ -122,20 +122,21 @@ la seta y los fusibles. Del #6 en adelante se puede trabajar en paralelo.
 | # | Acción | Cómo | Cierra o desbloquea |
 |---|---|---|---|
 | 1 | **Revisar los dos LM2596** | Fuente de banco limitada a ~300 mA, con la salida desconectada. Sin carga: pocos mA de consumo y la salida en lo ajustado. Con carga (~22 Ω en el de 5 V): regulación y rizado. **Si la salida copia la entrada, el módulo está muerto y no se conecta.** Comprar un repuesto igual | Que no lleguen 12 V al ESP32 ni a los servos |
-| 2 | **Corregir la retroalimentación del USB** | Confirmar el camino midiendo el nodo A (≤ 5 s, USB enchufado y sin batería). Schottky entre U2 y VIN; U2 a ~5,4 V; VIN en ~5,0 V. Medir en modo diodo si el devkit tiene diodo en VBUS. Verificar: USB sin batería, nodo A en 0 V y módulos fríos | Programar sin riesgo |
+| 2 | **Corregir la retroalimentación del USB** | Confirmar el camino midiendo el nodo A (≤ 5 s, USB enchufado y sin batería). Schottky entre U2 y VIN (1N5819 o SS34: **llevarlo o comprarlo antes**); U2 a ~5,4 V; VIN en ~5,0 V. Medir en modo diodo si el devkit tiene diodo en VBUS. Verificar: USB sin batería, nodo A en 0 V y módulos fríos | Programar sin riesgo |
 | 3 | **V1** | Osciloscopio disparado en EN, R_PWM_4 y L_PWM_4 en J19 sin potencia en el driver. Después, con el motor conectado, confirmar que no se mueve al encender | V1 |
 | 4 | **Seta** | Apretarla y confirmar que muere el bus de drivers | V7 |
 | 5 | **Fusibles** | F3..F6 de 7,5 A retardados y fusible general junto al XT60. Antes, medir con calibre el conductor del cable de ~1,5 mm y el de batería: los valores dependen de eso ([mapa-conectores](../20-modelo-escala/30-pcb/mapa-conectores.md)) | Condición para energizar la tracción |
 | 6 | **Rieles con motores y servos andando** | Osciloscopio con masa de resorte corta y disparo en el arranque. Bus de 12 V en los drivers, riel de servos, 5 V y 3,3 V. Sobrepicos y caídas en el arranque y la inversión, rizado de conmutación | V3; validación de los rieles |
-| 7 | **ACS712 por separado** | Puente H y motor en banco. Cero y respuesta contra el multímetro en serie. Cuando funcione, sumar el ADS1115 con [test-ads1115.ino](../20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino). Ninguna entrada del ADS por encima de 3,3 V. El protoboard sirve solo para esta prueba | Cadena de medición |
+| 7 | **ACS712 por separado** | Puente H y motor en banco. Cero y respuesta contra el multímetro en serie. Cuando funcione, sumar el ADS1115 con [test-ads1115.ino](../20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino). Ninguna entrada del ADS por encima de 3,3 V. El protoboard sirve solo para esta prueba. Con el ADS ya andando, sumar el **MPU6050 en la placa** con [test-mpu6050.ino](../20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino): el escaneo del ADS ya lo tiene que ver en 0x68 | Cadena de medición; MPU6050 en la placa |
 | 8 | **TMCS1126: código de lectura** | I = (V_reposo − V) / 0,1; tarar el cero en cada sesión. Después se prueba todo junto en la placa | V9, V11, calibración |
 | 9 | **Cables** | Largos y punteras. Los cables a los motores, la correspondencia y la rotulación quedan para cuando Mecánica devuelva los motores | Montaje en el modelo |
 | 10 | **Módulo BTS7960 que falló** | En un canal que ya anduvo, con fuente limitada en corriente y cada sentido por separado | Reparar o comprar repuesto |
-| 11 | **Encoders con PCNT, por separado** | Los tres que faltan; el riel ya está probado. Girar a mano: 5760 cuentas por vuelta de rueda y sentido de cuenta. Con el motor girando, cuentas falsas | Encoders validados |
+| 11 | **Encoders con PCNT, por separado** | Los tres que faltan; el riel ya está probado. Ej4 (diagnóstico de los 8 cables) y checklist de banco (§12) de la [guía PCNT](../20-modelo-escala/20-electronica/PCNT_ESP32_Guia_Rover.pdf). Girar a mano: 5760 cuentas por vuelta de rueda y sentido de cuenta. Con el motor girando, cuentas falsas | Encoders validados |
 
-Códigos: [test-ads1115.ino](../20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino) para el #7 y
-[test-mpu6050.ino](../20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino). Faltan el de
-lectura del TMCS (#8) y el de prueba del PCNT (#11).
+Códigos: [test-ads1115.ino](../20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino) para el #7,
+[test-mpu6050.ino](../20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino) y los ejemplos Ej1
+y Ej4 de la [guía PCNT](../20-modelo-escala/20-electronica/PCNT_ESP32_Guia_Rover.pdf) para el #11
+(están en el PDF; los `.ino` no están en el repo). Falta el de lectura del TMCS (#8).
 
 ### 7.2 Después, en prioridad baja
 

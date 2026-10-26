@@ -1,7 +1,7 @@
 ---
 titulo: Sensado de corriente — TMCS1126B4 y ACS712 de respaldo
 estado: vigente
-fecha: 2026-10-21
+fecha: 2026-10-26
 fuente: pcb-modelo-escala.md, sección sensado-corriente; decisiones del 27-sep-2026 (ADS1115 y ACS712); reunión de laboratorio del 8-oct-2026
 ---
 
@@ -107,6 +107,11 @@ cuenta con PGA ±2,048 V): el ADC de 12 bits sobre 3,3 V da 0,806 mV por escaló
 escalón**. El ruido de entrada del sensor (150 uA/√Hz) filtrado a 1,6 kHz da unos 6 mA rms, del
 mismo orden. El límite práctico va a ser la no linealidad conocida del ADC del ESP32, que hay que
 calibrar por puntos.
+
+> **Nota (26-oct-2026):** el PGA del ADS1115 se elige por canal. ±2,048 V vale para el canal del
+> TMCS; el ACS712 necesita ±4,096 V. `test-ads1115.ino` usa ±4,096 V en los cuatro canales por
+> simplicidad, o sea 1,25 mA por cuenta en el TMCS. Asignación por canal en
+> [instrumentacion.md](../50-ensayos/instrumentacion.md).
 
 ### Cadena de acondicionamiento
 

@@ -1,7 +1,7 @@
 ---
 titulo: Pendientes de verificación de la PCB (V1 a V12)
 estado: vigente
-fecha: 2026-10-21
+fecha: 2026-10-26
 fuente: pcb-modelo-escala.md, sección pendientes-de-verificacion; reunión de laboratorio del 8-oct-2026
 ---
 
@@ -45,7 +45,7 @@ Fuentes de error posibles en este análisis, que conviene tener presentes al rev
   del símbolo coincide con la del NLAS4157 en SC-88A, pero **hay que verificar que la huella
   `SOT-363_SC-70-6` esté con la misma numeración**. Si no lo estuviera, todo el razonamiento sobre
   B0/B1 cambia.
-- La asignación de pines de K1 (`Relay:RAYEX-L90S`) se dedujo resolviendo el espejado del símbolo en
+- La asignación de pines de K1 (símbolo `Relay:RAYEX-L90S`; el relé montado es un SONGLE SLA-12VDC-SL-C) se dedujo resolviendo el espejado del símbolo en
   el esquemático. Conviene confirmar con el multímetro cuál par es la bobina y cuál el contacto NO.
 - Los valores nominales de corriente de los conectores son de catálogo genérico; el fabricante real
   que se haya comprado puede diferir.

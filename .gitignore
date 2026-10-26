@@ -7,3 +7,9 @@ desktop.ini
 
 # Configuración local de Claude Code
 .claude/settings.local.json
+
+# Imágenes de audiovisual-presentacion: quedan solo en la laptop, no se suben
+audiovisual-presentacion/*.[jJ][pP][gG]
+audiovisual-presentacion/*.[jJ][pP][eE][gG]
+audiovisual-presentacion/*.[pP][nN][gG]
+audiovisual-presentacion/*.[wW][eE][bB][pP]

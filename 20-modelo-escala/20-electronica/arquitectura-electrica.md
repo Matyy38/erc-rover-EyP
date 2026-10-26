@@ -13,6 +13,10 @@ del ESP32 y la estrategia de arranque seguro **no están acá**: viven en
 
 ### Cadena de potencia
 
+Diagrama al 26-oct-2026: ya muestra los dos LM2596 con rieles separados (8-oct) y el Schottky
+planificado (23-oct). Q1 sigue dibujado, pero está puenteado desde el 27-sep (ver los cambios
+debajo del diagrama).
+
 ```
                          NODO A (12 V protegido, permanente)
  J1          Q1                 |
@@ -22,11 +26,14 @@ del ESP32 y la estrategia de arranque seguro **no están acá**: viven en
                    R14 10k      |
                    D4 16V       +--- JP1 ---+--- C7 1000u
                     (gate)      |           |
-                                |           +--- U2 LM2596  --> RIEL "+5V" (a setear en 7,2 V)
-                                |           |                     |
-                                |           +--- J2 (SETA NC)     +--- ESP1.19 (VIN del devkit)
-                                |                  |              +--- C9 100u + C10 1u
-                                |                  v              +--- F2 (PTC) --> C1 1000u --> J12/J13/J14/J17 (4 servos)
+                                |           +--- U2 LM2596 (5 V) --+--> [Schottky, planificado] --> ESP1.19 (VIN del devkit)
+                                |           |                      +--- C9 100u + C10 1u
+                                |           |
+                                |           +--- LM2596 de servos (7,2 V, sin ref.) --> F2 (PTC) --> C1 1000u --> J12/J13/J14/J17 (4 servos)
+                                |           |
+                                |           +--- J2 (SETA NC)
+                                |                  |
+                                |                  v
                                 |            K1 bobina A2
                                 |            D3 en antiparalelo
                                 |            K1 bobina A1 --> GND
@@ -137,11 +144,13 @@ propio en la PDB.
 | U3 TMCS1126 (Iq) | 11 - 14,5 mA |
 | MPU6050 | ~4 mA |
 | ADS1115 (27-sep) | <1 mA |
-| 4 encoders Hall | 40 - 80 mA (**medir**, es la incógnita grande) |
+| 4 encoders Hall | ≤ 40 mA (hoja del fabricante: máximo 10 mA cada uno; confirmar midiendo) |
 | 8 pull-ups de 4,7 k, peor caso todos en bajo | 5,6 mA |
 | VCC lógico de los 4 BTS7960 + enables | 10 - 30 mA (**medir**) |
 | 3 NLAS4157 | despreciable |
-| **Total estimado** | **150 - 250 mA, picos de 400 mA** |
+| **Total estimado** | **110 - 220 mA, picos de 400 mA** |
+
+Las cuentas de disipación de abajo usan 0,25 A, que queda como cota conservadora.
 
 Con el LM2596 en 5 V: el AMS1117 disipa (5 - 3,3) x 0,25 = 0,43 W. Se banca. **Es el caso real
 desde el 8-oct.**

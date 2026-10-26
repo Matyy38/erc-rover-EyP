@@ -18,7 +18,7 @@ fuente: pcb-modelo-escala.md, sección bom; reuniones de laboratorio del 8-oct y
 | U4 | NLAS4157 | SOT-363 | conmutador de Servo1, aísla IO0 |
 | U5 | NLAS4157 | SOT-363 | conmutador de Servo3, aísla IO15 |
 | Q1 | IRF9540N | TO-220 vertical | polaridad inversa. **Puenteado desde el 27-sep, no se usa** |
-| K1 | RAYEX-L90S (relé automotriz 12 V) | THT SPDT | corte de la rama de tracción |
+| K1 | **SONGLE SLA-12VDC-SL-C** (bobina de 12 V, contacto de 30 A según su rótulo). El `.sch` usa el símbolo RAYEX-L90S | THT SPDT | corte de la rama de tracción |
 | D1 | SM6T15A | SMB | TVS en el nodo A (ver V5) |
 | D2 | BAT54S | SOT-23 | clamp doble Schottky en la entrada de ADC de batería |
 | D3 | diodo estándar | SMA | antirretorno de la bobina del relé |

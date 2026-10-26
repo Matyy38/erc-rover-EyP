@@ -1,7 +1,7 @@
 ---
 titulo: Protecciones y desacople de la PCB del modelo
 estado: vigente
-fecha: 2026-09-27
+fecha: 2026-10-26
 fuente: pcb-modelo-escala.md, sección protecciones-desacople
 ---
 
@@ -84,11 +84,12 @@ polaridad inversa, que es donde tiene que ir.
 
 ### Inrush del contacto del relé (V7)
 
-K1 es un relé automotriz de 12 V / 40 A. Al cerrar conecta el nodo A contra C2 (1000 uF) más el
+K1 es un SONGLE SLA-12VDC-SL-C: bobina de 12 V y contacto de 30 A según su rótulo (el símbolo del
+`.sch` dice RAYEX-L90S, un relé automotriz de 40 A). Al cerrar conecta el nodo A contra C2 (1000 uF) más el
 desacople local de los drivers (4 x 940 uF si se monta lo recomendado), del orden de **4,8 mF**. La
 energía que va al arco de cierre es del orden de `½CV² = 350 mJ` por encendido.
 
-Un contacto de 40 A lo tolera, pero repetido erosiona y puede terminar soldando los contactos. El
+Un contacto de 30 A lo tolera, pero repetido erosiona y puede terminar soldando los contactos. El
 síntoma es que la seta deja de cortar y nadie se entera hasta que hace falta. **Verificación
 periódica: con la seta apretada, medir continuidad entre el nodo A y el riel conmutado.** Debe ser
 circuito abierto.
