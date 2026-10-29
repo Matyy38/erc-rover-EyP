@@ -86,7 +86,7 @@ void escanearBus() {
   if (encontrados == 0) Serial.println("#   Ningún dispositivo: revisar 3,3 V, GND, SDA y SCL.");
 }
 
-void setup() {
+void setup() {  
   Serial.begin(115200);
   delay(500);
   Serial.println("\n# ===== Prueba ADS1115 - modelo a escala =====");
