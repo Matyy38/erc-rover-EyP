@@ -1,7 +1,7 @@
 ---
 titulo: Decisiones descartadas
 estado: vigente
-fecha: 2026-09-27
+fecha: 2026-10-26
 fuente: consolidado de los cuatro documentos (contexto maestro, pcb-modelo-escala, metodologia-modelo-escala, requisitos-motor)
 ---
 
@@ -38,6 +38,7 @@ razón.
 | TVS de 12,8 V de standoff | Avalancha continua con la batería a 13,8–14,4 V |
 | Bajar el modelo a 4,6 kg | Difícil, no vale la pena: se ajusta el diámetro de rueda |
 | Corregir el desfasaje de λ a mano | El término de compactación no tiene corrección exacta sin caracterizar la arena |
+| Cable USB solo de datos para evitar la retroalimentación | Descartado el 26-oct: depende de que nadie use otro cable. Se corrige en la placa con un Schottky en VIN |
 
 ---
 
@@ -54,3 +55,4 @@ razón.
 | Convertidor regulado e instrumento externo | [plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md) y [instrumentacion.md](../20-modelo-escala/50-ensayos/instrumentacion.md) |
 | Capacitor de 10 nF en encoder | [encoders-pcnt.md](../20-modelo-escala/20-electronica/encoders-pcnt.md) |
 | Skid-steer en el modelo | [10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) §8 |
+| Cable USB solo de datos | [arquitectura-electrica.md](../20-modelo-escala/20-electronica/arquitectura-electrica.md) |

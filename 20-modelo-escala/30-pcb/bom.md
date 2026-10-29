@@ -1,8 +1,8 @@
 ---
 titulo: BOM de la PCB del modelo
 estado: vigente
-fecha: 2026-09-27
-fuente: pcb-modelo-escala.md, sección bom
+fecha: 2026-10-26
+fuente: pcb-modelo-escala.md, sección bom; reuniones de laboratorio del 8-oct y del 23-oct-2026
 ---
 
 # BOM
@@ -13,12 +13,12 @@ fuente: pcb-modelo-escala.md, sección bom
 |---|---|---|---|
 | ESP1 | ESP32-DEVKITC (38 pines) | zócalo | control, PCNT, PWM, ADC, I2C |
 | U1 | NLAS4157 | SOT-363 / SC-70-6 | conmutador de R_PWM_4, aísla el strapping IO5 |
-| U2 | LM2596 (módulo step-down) | módulo | 12 V a 5 V o 7,2 V |
+| U2 | LM2596 (módulo step-down) | módulo | 12 V a 5 V, solo para el ESP32 (8-oct). Los servos tienen un LM2596 aparte, ver agregados del 8-oct |
 | U3 | **TMCS1126B4** | SOIC-10 DVG | sensor de corriente total de tracción, 100 mV/A |
 | U4 | NLAS4157 | SOT-363 | conmutador de Servo1, aísla IO0 |
 | U5 | NLAS4157 | SOT-363 | conmutador de Servo3, aísla IO15 |
 | Q1 | IRF9540N | TO-220 vertical | polaridad inversa. **Puenteado desde el 27-sep, no se usa** |
-| K1 | RAYEX-L90S (relé automotriz 12 V) | THT SPDT | corte de la rama de tracción |
+| K1 | **SONGLE SLA-12VDC-SL-C** (bobina de 12 V, contacto de 30 A según su rótulo). El `.sch` usa el símbolo RAYEX-L90S | THT SPDT | corte de la rama de tracción |
 | D1 | SM6T15A | SMB | TVS en el nodo A (ver V5) |
 | D2 | BAT54S | SOT-23 | clamp doble Schottky en la entrada de ADC de batería |
 | D3 | diodo estándar | SMA | antirretorno de la bobina del relé |
@@ -57,9 +57,9 @@ Referencias no usadas en el esquemático: R17 a R20 (saltadas en la numeración)
 
 | Ref | Falta | Propuesta |
 |---|---|---|
-| F3..F6 | valor | 7,5 a 8 A retardado (T), 5x20 mm, una vez resuelto V4 |
-| F2 | valor | depende de si se separa el riel de servos. Con riel compartido: 3 A de mantenimiento |
-| Fusible general | valor y ubicación | 15 A si J1 sigue siendo Phoenix; 20-25 A si se pasa a XT60 |
+| F3..F6 | valor | 7,5 A retardado (T), 5x20 mm. V4 ya no aplica. Tiene que proteger al cable de ~1,5 mm que se usó (23-oct): ver [mapa-conectores.md](mapa-conectores.md) |
+| F2 | valor | el riel de servos quedó separado (8-oct). Un PTC de 3 A de mantenimiento queda en línea con la capacidad del LM2596 dedicado |
+| Fusible general | valor | en la entrada de batería, junto al XT60 (23-oct). 20 A retardado si el cable es de 14 AWG o más grueso; 15 A con 16 AWG. Ver [mapa-conectores.md](mapa-conectores.md) |
 | D3 | número de parte | cualquier rectificador de 1 A / 100 V (1N4007, S1M) |
 | D4 | número de parte | zener 16 V / 500 mW |
 
@@ -81,12 +81,31 @@ Parte del diseño aunque se monten fuera de la PCB:
 |---|---|---|
 | Resistencia de pull-up en L_PWM_4 (V1) | componente agregado, sin cortes | soldada; **valor a asentar** |
 | Puente sobre Q1 | puente | hecho |
-| Módulo ADS1115 (16 bits, I2C, 0x48) | fuera de placa, en el bus I2C de J3 | comprado |
-| Módulo ACS712-30A | fuera de placa, en la pata de motor de una rueda delantera | disponible |
-| Regulador lineal de 5 V para el ACS712 (78L05 o AMS1117-5.0) con sus capacitores | fuera de placa | a comprar (~1 USD) |
-| Mazo en Y para J3 (Molex KK-254, 4 vías) | mazo | a armar |
-| Cable trenzado con masa desde Vout_CS (pad de C8 o pin IO33) a AIN0 | agregado de cable, sin cortes | a hacer |
-| 2 × 10 k serie en AIN1 y AIN3; divisor 1:2 para AIN2 | fuera de placa | a comprar |
+| Módulo ADS1115 (16 bits, I2C, 0x48) | fijo a la placa, cables soldados | **montado (8-oct)**, sin probar |
+| Módulo ACS712-30A | en la pata de motor de una rueda delantera | **cableado (8-oct)**, sin probar |
+| Regulador lineal de 5 V para el ACS712 (78L05 o AMS1117-5.0) con sus capacitores | fuera de placa | a confirmar al escribir el código de prueba |
+| Mazo en Y para J3 (Molex KK-254, 4 vías) | mazo | **no hace falta**: el ADS1115 quedó fijo a la placa |
+| Cable trenzado con masa desde Vout_CS (pad de C8 o pin IO33) a AIN0 | agregado de cable, sin cortes | a confirmar al escribir el código de prueba |
+| 2 × 10 k serie en AIN1 y AIN3; divisor 1:2 para AIN2 | fuera de placa | a confirmar al escribir el código de prueba |
+
+### Agregados del 8-oct-2026
+
+| Ítem | Tipo de cambio | Estado |
+|---|---|---|
+| Segundo módulo LM2596 en 7,2 V, solo para el riel de servos (entrada del mismo punto que U2; salida a F2) | corte y puente en la placa | hecho |
+| U2 reajustado a 5 V | ajuste | hecho |
+| Cable de silicona soldado en lugar de J1 (batería) | conector reemplazado por cable | hecho; cable grueso que ya había, con XT60 y fusible (23-oct) |
+| Cable de silicona soldado en lugar de J4..J7 (drivers), con puntera en la bornera del driver | conector reemplazado por cable | cable de ~1,5 mm (23-oct); faltan punteras |
+| Módulo BTS7960 de repuesto | compra | recomendado: uno de los módulos falló |
+
+### Agregados del 23-oct-2026 (planificados)
+
+| Ítem | Tipo de cambio | Estado |
+|---|---|---|
+| Schottky 1N5819 (THT) o SS34 (SMA), entre la salida de U2 y VIN del ESP32 | corte y puente + diodo | a aplicar |
+| U2 reajustado a ~5,4 V | ajuste | a aplicar, después del diodo |
+| LM2596 de repuesto | compra | a comprar |
+| BTS7960 de repuesto | compra | ya listado el 8-oct; depende de la revisión del módulo |
 
 ---
 

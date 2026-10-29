@@ -1,13 +1,17 @@
 ---
 titulo: Drivers BTS7960 del modelo a escala
 estado: vigente
-fecha: 2026-09-27
-fuente: pcb-modelo-escala.md, sección drivers-bts7960
+fecha: 2026-10-21
+fuente: pcb-modelo-escala.md, sección drivers-bts7960; reunión de laboratorio del 8-oct-2026
 ---
 
 # Drivers BTS7960
 
-Validado: se probó un puente H de cada unidad y funcionaron.
+Validado (8-oct-2026): **los cuatro canales de la placa para los puentes H funcionan.** Se probaron
+con un módulo BTS7960 y un motor conectados directo. De los módulos BTS7960, **uno no funcionó**: la
+falla es del módulo, no de la PCB, porque todos los canales de la placa andan. Hay que verificarlo.
+Los drivers todavía no están montados en el modelo ni numerados, así que el módulo que falló no
+tiene número de driver asignado: conviene marcarlo físicamente.
 
 ### Interfaz
 
@@ -16,7 +20,9 @@ Cada driver usa **dos conectores separados**: uno de señal (4 vías) y uno de p
 - **Señal:** J10 (BTS7960_1), J11 (BTS7960_2), J15 (BTS7960_3) y J19 (BTS7960_4), Molex KK-254 de 4
   vías. Llevan L_PWM, R_PWM, +3,3 V y GND. En J19, **R_PWM_4 no viene directo del ESP32 sino de U1**.
 - **Potencia:** J6 (driver 1), J4 (driver 2), J5 (driver 3) y J7 (driver 4), Molex KK-254 de 2 vías,
-  cada uno detrás de su fusible.
+  cada uno detrás de su fusible. **Desde el 8-oct los KK-254 de potencia se sacan:** el cable de
+  silicona va soldado a la placa y, del lado del driver, con puntera en la bornera del módulo. Ver
+  [30-pcb/mapa-conectores.md](../30-pcb/mapa-conectores.md).
 
 Pinout completo con huella y corriente nominal en
 [30-pcb/mapa-conectores.md](../30-pcb/mapa-conectores.md). GPIO de origen de cada línea PWM en

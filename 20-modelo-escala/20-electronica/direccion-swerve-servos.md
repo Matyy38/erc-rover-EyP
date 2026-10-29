@@ -1,8 +1,8 @@
 ---
 titulo: Dirección swerve y riel de servos
 estado: vigente
-fecha: 2026-09-27
-fuente: pcb-modelo-escala.md, sección direccion-swerve-servos
+fecha: 2026-10-21
+fuente: pcb-modelo-escala.md, sección direccion-swerve-servos; reunión de laboratorio del 8-oct-2026
 ---
 
 # Dirección swerve y servos
@@ -26,13 +26,21 @@ fijarla.
 
 ### Margen del riel de servos (V3)
 
+> **Mitigado por hardware el 8-oct-2026 (opción 6 de la tabla de abajo).** Los servos tienen ahora su
+> propio LM2596 en 7,2 V, conectado con **corte y puente en la placa**. U2 quedó en 5 V y alimenta
+> solo al ESP32. F2 sigue en serie con el riel de servos. Un bloqueo de los cuatro servos ahora hunde
+> solo su propio riel; el ESP32 queda del otro lado. **V3 sigue abierto** hasta confirmar en los
+> ensayos que no hay reinicios por brownout. El análisis de abajo describe la situación previa y
+> sigue valiendo para el riel de servos: con un convertidor de 3 A, cuatro servos trabados lo hunden
+> igual, y pierden torque.
+
 | Dato | Valor |
 |---|---|
 | Servos | 4, alimentados a 7,2 V según la nota del esquemático |
 | Corriente de bloqueo por servo | 2,5 A (el PDF cita MG996R; confirmar el modelo real) |
 | Demanda con los 4 bloqueados | 10 A |
 | Demanda con los 4 moviéndose sin carga | 2 a 3,6 A |
-| Capacidad del LM2596 (módulo comercial) | 3 A de pico nominal, 1,5 a 2 A continuos reales sin disipador |
+| Capacidad del LM2596 (módulo comercial) | 3 A de pico nominal, 1,5 a 2 A continuos reales sin disipador. Desde el 8-oct es un LM2596 dedicado |
 | Reserva local | C1 = 1000 uF |
 
 Cuánto aguanta el capacitor: para 10 A y aceptando 0,5 V de caída, `dt = C·dV/I = 1000u x 0,5 / 10`
@@ -106,6 +114,11 @@ TMCS1126 tampoco ve el riel de servos. Alternativas reales:
 
 Orden sugerido: firmware 1, 2 y 3 ya; ensayo de V3; si el ESP32 se resetea con los cuatro trabados,
 opción 6 con mazo en Y.
+
+**Lo que se hizo (8-oct-2026):** la opción 6 se adelantó sin esperar el ensayo, con un convertidor
+dedicado (segundo LM2596) y con corte y puente en la placa en vez de mazo. F2 sigue protegiendo el
+riel. Los firmware 1, 2 y 3 siguen recomendados: ahora no protegen al ESP32, pero bajan los picos
+de corriente que ve el convertidor de servos y el PTC.
 
 ### F2: un solo PTC para los cuatro servos
 

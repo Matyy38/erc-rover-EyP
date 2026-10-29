@@ -1,13 +1,15 @@
 ---
 titulo: Encoders en cuadratura y periférico PCNT
 estado: vigente
-fecha: 2026-09-16
+fecha: 2026-10-26
 fuente: pcb-modelo-escala.md, sección encoders-pcnt
 ---
 
 # Encoders y PCNT
 
-Validado: se probó un encoder y funcionó correctamente.
+Validado: se probó un encoder y funcionó correctamente. Los otros tres se prueban directamente con
+el periférico PCNT (pendiente al 8-oct-2026). Guía de uso del PCNT para el rover en
+[PCNT_ESP32_Guia_Rover.pdf](PCNT_ESP32_Guia_Rover.pdf).
 
 ### Interfaz física
 
@@ -18,9 +20,13 @@ J18 (RL) y J8 (RR). El pinout completo, con huella y corriente nominal, está en
 
 **Los encoders se alimentan con 3,3 V**, no con 5 V. Esto resuelve de raíz el riesgo de sobretensión
 en IO34..IO39 que estaba abierto: como el encoder del CQR37D12V64EN-I acepta de 3,3 a 24 V, al
-alimentarlo con 3,3 V la salida no puede superar 3,3 V, tenga o no pull-up interno el módulo.
-Si algún módulo trae pull-up interno a VCC, queda en paralelo con el de la placa y el equivalente
-baja (4,7 k // 10 k = 3,2 k): no es un problema, pero sí una diferencia de tiempos entre canales.
+alimentarlo con 3,3 V la salida no puede superar 3,3 V.
+
+**Dato de la hoja del fabricante (CQRobot, 26-oct-2026):** la salida de cada canal es de colector
+abierto con **pull-up interno de 10 k a VCC**, y cada encoder consume **como máximo 10 mA**. El
+pull-up interno queda en paralelo con el de la placa: el equivalente es 4,7 k // 10 k = **3,2 k**.
+No es un problema; la constante de subida baja a ~0,22 us. Las imágenes de la hoja están en
+`audiovisual-presentacion/37DMotor-CQR37D12V64EN-A-2.jpg` y `-A-5.jpg` (solo en la copia local, no se suben a GitHub).
 
 ### Acondicionamiento
 
@@ -64,7 +70,8 @@ manejar el desborde, la medición de velocidad se rompe silenciosamente.
 ### Pendientes
 
 - Repetir la prueba en los cuatro canales, no solo en el que ya se validó.
-- Medir el consumo real de los cuatro encoders a 3,3 V (entra directo en el presupuesto del AMS1117).
+- Confirmar midiendo el consumo de los cuatro encoders a 3,3 V. La hoja da como máximo 10 mA por
+  encoder, o sea ≤ 40 mA en total (entra directo en el presupuesto del AMS1117).
 - Definir el sentido positivo de cuenta de cada rueda y dejarlo escrito (las dos ruedas de un lado
   giran al revés que las del otro para avanzar).
 - Cablear A/B como par trenzado con su propio GND de retorno, lejos de los cables de motor.
