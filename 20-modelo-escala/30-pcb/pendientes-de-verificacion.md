@@ -1,11 +1,11 @@
 ---
-titulo: Pendientes de verificación de la PCB (V1 a V12)
+titulo: Pendientes de verificación de la PCB (V1 a V13)
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-13
 fuente: pcb-modelo-escala.md, sección pendientes-de-verificacion; reunión de laboratorio del 8-oct-2026
 ---
 
-# Pendientes de verificación (V1 a V12)
+# Pendientes de verificación (V1 a V13)
 
 Puntos surgidos del análisis del esquemático que **quedan por confirmar en el banco**. No son fallas
 comprobadas: varios pueden descartarse con una medición de dos minutos, y algunos ya podrían estar
@@ -30,6 +30,7 @@ mitigado por hardware y falta verificarlo, y V2, V4 y V10 dejaron de aplicar.
 | V9 | Tensión real en VOC y utilidad del pin OC | medir VOC con el multímetro y comparar con el cálculo (3,0 V esperados) | [sensado-corriente](../20-electronica/sensado-corriente.md) |
 | V11 | Signo de la lectura de corriente (IN- a IN+) | carga conocida y ver si Vout sube o baja desde 1,65 V | [sensado-corriente](../20-electronica/sensado-corriente.md) |
 | V12 | Lectura de V_bat con la seta apretada (el divisor está post-relé) | apretar la seta y leer el ADC | [arquitectura-electrica](../20-electronica/arquitectura-electrica.md) |
+| V13 | F2 (PTC del riel de servos) entrando en disparo con los 4 servos moviéndose juntos. **Observado el 13-nov, sin medir:** con alimentación externa conectada (no solo USB), un sketch de barrido que mueve los 4 servos a la vez y de golpe (0°-90°-180°, pulsos de 0,5 a 2,5 ms) anda bien al principio y después los servos van más lento y con menos fuerza; F2 se sintió caliente al tacto. El valor de F2 sigue sin definir en el BOM | con el mismo sketch: caída sobre F2 al arrancar y a los 3 min (decenas de mV es normal; volts y subiendo es disparo) y salida del LM2596 de servos antes de F2, para descartar al módulo. Leer el valor grabado en F2 y asentarlo en el [BOM](bom.md). Repetir con consigna en rampa y arranque escalonado: si F2 ya no calienta, la causa es la simultaneidad | [direccion-swerve-servos](../20-electronica/direccion-swerve-servos.md) |
 
 ## Resueltos
 
