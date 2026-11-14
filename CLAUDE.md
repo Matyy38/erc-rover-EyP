@@ -79,6 +79,7 @@ superadas, incluidas las fuentes originales de la migración.
 | Cuánta corriente va a consumir el rover | `10-rover-final/20-potencia/presupuesto-corriente.md` |
 | Escala del modelo, λ, extrapolación | `20-modelo-escala/10-metodologia-similitud.md` |
 | Qué GPIO hace qué | `20-modelo-escala/40-firmware/mapa-gpio.md` |
+| **Escribir o modificar código (leer antes, siempre)** | `20-modelo-escala/40-firmware/reglas-de-codigo.md` |
 | Un conector, un pinout | `20-modelo-escala/30-pcb/mapa-conectores.md` |
 | Un componente de la placa | `20-modelo-escala/30-pcb/bom.md` |
 | Qué falta medir en la placa | `20-modelo-escala/30-pcb/pendientes-de-verificacion.md` |

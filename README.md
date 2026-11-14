@@ -1,7 +1,7 @@
 ---
 titulo: Rover ERC — subsistema de Electrónica y Potencia
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-13
 fuente: migracion.md (árbol y mapeo de los cuatro documentos fuente)
 ---
 
@@ -57,6 +57,7 @@ rover-erc/
 │   │   └── pendientes-de-verificacion.md
 │   ├── 40-firmware/
 │   │   ├── mapa-gpio.md
+│   │   ├── reglas-de-codigo.md
 │   │   ├── test-ads1115/
 │   │   └── test-mpu6050/
 │   └── 50-ensayos/
@@ -114,8 +115,9 @@ rover-erc/
 | [30-pcb/decisiones-layout.md](20-modelo-escala/30-pcb/decisiones-layout.md) | Masas en estrella, ruteo del TMCS1126, potencia, analógico y mecánica. |
 | [30-pcb/mapa-conectores.md](20-modelo-escala/30-pcb/mapa-conectores.md) | Tabla completa de J1 a J19, calibre y fusible del cable soldado en J1 y J4..J7, y convenciones de cableado. |
 | [30-pcb/bom.md](20-modelo-escala/30-pcb/bom.md) | Lista por referencia, ítems sin valor definido y compras fuera de placa. |
-| [30-pcb/pendientes-de-verificacion.md](20-modelo-escala/30-pcb/pendientes-de-verificacion.md) | Los doce puntos V1 a V12, cómo se confirma cada uno y dónde se discute. |
+| [30-pcb/pendientes-de-verificacion.md](20-modelo-escala/30-pcb/pendientes-de-verificacion.md) | Los trece puntos V1 a V13, cómo se confirma cada uno y dónde se discute. |
 | [40-firmware/mapa-gpio.md](20-modelo-escala/40-firmware/mapa-gpio.md) | **Fuente única de verdad del pinout**, con la estrategia de arranque seguro. |
+| [40-firmware/reglas-de-codigo.md](20-modelo-escala/40-firmware/reglas-de-codigo.md) | **Reglas para todo código nuevo o modificado**: comentado, simple, sin sobreingeniería, para nivel Arduino básico, modular y fácil de diagnosticar. |
 | [40-firmware/test-ads1115/](20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino) | Prueba simple del ADS1115: escaneo I2C y tensión de los cuatro canales cada 0,5 s. |
 | [40-firmware/test-mpu6050/](20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino) | Prueba del MPU6050: escaneo I2C, prueba estática con pasa / no pasa, ángulos a 100 Hz. |
 | [50-ensayos/instrumentacion.md](20-modelo-escala/50-ensayos/instrumentacion.md) | Cadena de medición, tiro en barra, instrumento externo y riesgos de medición. |

@@ -1,7 +1,7 @@
 ---
 titulo: Instrumentación de ensayos del modelo a escala
 estado: vigente
-fecha: 2026-10-21
+fecha: 2026-11-13
 fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §2, §3.3, §3.4 y riesgos de medición de §5; decisiones del 27-sep-2026 (ADS1115 comprado, ACS712 a bordo)
 ---
 
@@ -32,20 +32,32 @@ microcontrolador.
 | Multímetro 10 A | en serie, en banco | referencia | calibración |
 | Brazo + balanza de cocina | eje de salida | torque en bloqueo | Ensayo A |
 
-**Canales del ADS1115** (dirección 0x48; el MPU6050 está en 0x68). Asignación de diseño: la real se
-confirma al escribir el código de prueba.
+**Canales del ADS1115** (dirección 0x48; el MPU6050 está en 0x68). Asignación real desde el
+13-nov-2026:
 
 | Canal | Señal | PGA | Resolución |
 |---|---|---|---|
-| AIN0 | Vout_CS del TMCS (cable desde el pad de C8 o el pin IO33) | ±2,048 V | 0,63 mA por cuenta |
-| AIN1 | salida del ACS712, con 10 k en serie | ±4,096 V | 1,9 mA por cuenta |
-| AIN2 | alimentación del ACS712 dividida por 2 (corrige que es proporcional a su alimentación) | ±4,096 V | — |
-| AIN3 | reservado: IS del BTS7960 de la rueda del ACS712, solo si se aprueba | ±4,096 V | — |
+| AIN0 | Vout_CS del TMCS (el mismo nodo que IO33) | ±4,096 V | 1,25 mA por cuenta |
+| AIN1 | V_bat: nodo del divisor 10 k / 2,2 k (el mismo que IO32). Reemplaza al ACS712 del diseño | ±4,096 V | 0,69 mV de batería por cuenta |
+| AIN2 | a confirmar | — | — |
+| AIN3 | a confirmar | — | — |
+
+> **Cambio del 13-nov-2026.** AIN1 pasó a leer V_bat, para comparar el ADC del ESP32 contra el
+> ADS1115 sobre la misma tensión y detectar falta de linealidad. Queda **a confirmar dónde quedó el
+> ACS712** y qué hay en AIN2 y AIN3. AIN0 pasó de ±2,048 V a ±4,096 V: con ±2,048 V satura a unos
+> −4 A de regeneración (salida por encima de 2,048 V), que aparece justo en las pruebas de inversión y
+> de frenado. A 1,25 mA por cuenta sigue sobrando para medir en amperes. AIN1 necesita ±4,096 V: con
+> la batería cargada (14,4 V) el nodo llega a 2,6 V.
+>
+> Diseño original, superado: AIN0 TMCS a ±2,048 V; AIN1 ACS712 con 10 k en serie; AIN2 alimentación
+> del ACS712 dividida por 2; AIN3 reservado para el IS del BTS7960 de esa rueda.
 
 - **ADS1115 a 3,3 V.** A 5 V no reconoce el alto de 3,3 V del ESP32. Ninguna entrada puede pasar de
   3,3 V: el ACS712 (cero en 2,5 V, 66 mV/A) en la pata de un motor va de 2,14 a 2,86 V con ±5,5 A.
   El límite estaría en +12 A.
-- **Muestreo:** 860 muestras/s de a una conversión, alternando 3 canales → ~200 por canal. Cada
+- **Muestreo:** 860 muestras/s de a una conversión. Alternando AIN0 y AIN1 sale bastante menos de
+  la mitad por canal, porque con el I2C a 100 kHz cada lectura suma ~1 ms de transferencia. Para los picos de arranque se usa el
+  ADC del ESP32 (IO33 a 1 kHz) y el ADS para los valores de régimen. Cada
   conversión integra ~1,2 ms (unos 23 períodos de PWM a 20 kHz): el ADS1115 promedia la modulación
   por sí solo, cosa que el ADC del ESP32 no hace.
 - **Sin GPIO libre para ALERT/RDY:** se lee por sondeo.

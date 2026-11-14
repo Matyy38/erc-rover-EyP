@@ -3,7 +3,7 @@ titulo: Contexto maestro — Rover ERC, subsistema de Electrónica y Potencia
 owner: Matías Bélico
 version: 2.3
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-13
 fuente: 00-contexto-maestro.md (fuente original en 90-archivo/fuentes-originales/), reducido a índice de estado
 alcance: subsistema de potencia y electrónica
 proposito: documento raíz del repo. Estado, conflictos abiertos y próximos pasos. El detalle técnico vive en los archivos que este índice referencia.
@@ -43,6 +43,7 @@ ciegas. Esa es su única razón de ser, y todo lo que se decide sobre él se juz
 | Reglas no negociables | COTS primero, star grounding, silicona AWG, conectores con traba, E-Stop y fusibles | [02-filosofia-de-diseno.md](02-filosofia-de-diseno.md) |
 | Descartados | Qué se evaluó y no quedó, con el motivo | [04-decisiones-descartadas.md](04-decisiones-descartadas.md) |
 | Principios transversales | Catorce reglas ganadas que aplican más allá de su caso | [05-principios-transversales.md](05-principios-transversales.md) |
+| **Reglas de código** (13-nov) | Todo código nuevo o modificado: bien comentado y detallado; simple antes que corto, sin estructuras difíciles de leer; sin sobreingeniería; escrito para el nivel del equipo (Arduino básico); modular y fácil de diagnosticar por el monitor serie | [reglas-de-codigo.md](../20-modelo-escala/40-firmware/reglas-de-codigo.md) |
 
 ---
 
@@ -82,7 +83,7 @@ Desarrollo y consulta consolidada a Mecánica en
 |---|---|---|
 | Escala, motor y qué valida el modelo | **Abierta:** las ruedas miden 150 mm y no corresponden a ~5,5 kg. Decidir reimprimir (recomendado) o lastrar | [10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) §0 |
 | PCB | Fabricada y soldada. Los 4 canales de puente H validados; un módulo BTS7960 falló y está sin revisar. Dos LM2596, cables de potencia soldados, mazos con traba casi terminados, ADS1115 y ACS712 montados sin probar. **Retroalimentación desde el USB del ESP32 (23-oct)**: corrección con Schottky planificada | [00-estado-actual.md](../20-modelo-escala/00-estado-actual.md) |
-| Puntos V1 a V12 | Hipótesis de escritorio pendientes de medir, no defectos. V1 y V3 mitigados sin verificar; V2, V4 y V10 no aplican | [pendientes-de-verificacion.md](../20-modelo-escala/30-pcb/pendientes-de-verificacion.md) |
+| Puntos V1 a V13 | Hipótesis de escritorio pendientes de medir, no defectos. V1 y V3 mitigados sin verificar; V2, V4 y V10 no aplican. V13 (13-nov): F2 caliente con los 4 servos moviéndose juntos, sin medir | [pendientes-de-verificacion.md](../20-modelo-escala/30-pcb/pendientes-de-verificacion.md) |
 | Ensayos | Plan rev. 2.0 (reemplaza al protocolo rev. 1.0). Ninguno corrido | [plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md) |
 | Pinout | Fuente única de verdad | [mapa-gpio.md](../20-modelo-escala/40-firmware/mapa-gpio.md) |
 
