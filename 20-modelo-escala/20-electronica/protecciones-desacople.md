@@ -1,7 +1,7 @@
 ---
 titulo: Protecciones y desacople de la PCB del modelo
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección protecciones-desacople
 ---
 
@@ -93,6 +93,9 @@ Un contacto de 30 A lo tolera, pero repetido erosiona y puede terminar soldando 
 síntoma es que la seta deja de cortar y nadie se entera hasta que hace falta. **Verificación
 periódica: con la seta apretada, medir continuidad entre el nodo A y el riel conmutado.** Debe ser
 circuito abierto.
+
+**Al 15-nov-2026 la seta se probó y anda:** corta el bus de drivers. Cierra la verificación inicial
+de V7; la de continuidad sigue valiendo como control periódico.
 
 Mitigación estándar si aparece: **resistencia de precarga de 22 Ω / 5 W en paralelo con el
 contacto**. La constante de carga pasa a `22 × 4,8 mF = 106 ms`, o sea que los capacitores ya están

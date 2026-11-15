@@ -1,7 +1,7 @@
 ---
 titulo: Sensado de corriente — TMCS1126B4 y ACS712 de respaldo
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección sensado-corriente; decisiones del 27-sep-2026 (ADS1115 y ACS712); reunión de laboratorio del 8-oct-2026
 ---
 
@@ -20,6 +20,11 @@ El ACS712-30A del PDF quedó cancelado **como sensor de placa**. En su lugar hay
 > cero en 1,65 V. Queda cerrada la duda de sensibilidad. Hoja de datos en
 > [tmcs1126-datasheet.pdf](tmcs1126-datasheet.pdf) (SBOSAF3D). El ADS1115 quedó fijo a la placa y el
 > ACS712 cableado; ninguno de los dos sensores está calibrado ni probado todavía.
+
+> **Al 15-nov-2026:** el **TMCS quedó cableado a AIN0 del ADS1115 y a IO33** (ADC del ESP32), sin
+> probar todavía. El **ACS712 se quemó** por un error en el laboratorio: se evalúa reemplazarlo por
+> otro sensor. **Queda para consultar** qué sensor y si se mantiene el rol de respaldo en la pata de
+> una rueda. Mientras tanto, la sección del ACS712 de abajo describe el diseño, no lo montado.
 
 | Parámetro | Valor |
 |---|---|

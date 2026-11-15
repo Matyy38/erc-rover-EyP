@@ -1,7 +1,7 @@
 ---
 titulo: BOM de la PCB del modelo
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección bom; reuniones de laboratorio del 8-oct y del 23-oct-2026
 ---
 
@@ -24,7 +24,7 @@ fuente: pcb-modelo-escala.md, sección bom; reuniones de laboratorio del 8-oct y
 | D3 | diodo estándar | SMA | antirretorno de la bobina del relé |
 | D4 | zener 16 V | MiniMELF | protección de compuerta de Q1 |
 | D5 | LED | 3 mm THT | indicación de bus energizado (~4,5 mA) |
-| F2 | PTC rearmable | huella de disco 9 mm (corregir) | protección del riel de servos. Valor sin definir |
+| F2 | PTC rearmable, rotulado **X50** (~0,5 A de mantenimiento) | huella de disco 9 mm (corregir) | protección del riel de servos. **Mal dimensionado: a reemplazar por uno de 3 A** (V13) |
 | F3, F4, F5, F6 | fusible 5x20 mm a clip | FuseClip 5x20 | uno por driver. Valor sin definir |
 | FB1 | ferrita (1 k a 100 MHz) | 0805 | filtro de alimentación del sensor |
 | C1 | 1000 uF | radial D10, P5 | reserva del riel de servos |
@@ -57,8 +57,8 @@ Referencias no usadas en el esquemático: R17 a R20 (saltadas en la numeración)
 
 | Ref | Falta | Propuesta |
 |---|---|---|
-| F3..F6 | valor | 7,5 A retardado (T), 5x20 mm. V4 ya no aplica. Tiene que proteger al cable de ~1,5 mm que se usó (23-oct): ver [mapa-conectores.md](mapa-conectores.md) |
-| F2 | valor | el riel de servos quedó separado (8-oct). Un PTC de 3 A de mantenimiento queda en línea con la capacidad del LM2596 dedicado |
+| F3..F6 | tipo | **5 A colocados (al 15-nov)**. Falta asentar si son 5x20 rápidos, retardados o de cuchilla (V14). Ver [mapa-conectores.md](mapa-conectores.md) |
+| F2 | reemplazo | el montado es un X50 (~0,5 A de mantenimiento), muy por debajo de los 2 a 3,6 A de los 4 servos moviéndose. Reemplazar por un PTC de **3 A de mantenimiento**, en línea con la capacidad del LM2596 dedicado. Componente a reemplazar, sin cortes. A comprar |
 | Fusible general | valor | en la entrada de batería, junto al XT60 (23-oct). 20 A retardado si el cable es de 14 AWG o más grueso; 15 A con 16 AWG. Ver [mapa-conectores.md](mapa-conectores.md) |
 | D3 | número de parte | cualquier rectificador de 1 A / 100 V (1N4007, S1M) |
 | D4 | número de parte | zener 16 V / 500 mW |
@@ -82,7 +82,7 @@ Parte del diseño aunque se monten fuera de la PCB:
 | Resistencia de pull-up en L_PWM_4 (V1) | componente agregado, sin cortes | soldada; **valor a asentar** |
 | Puente sobre Q1 | puente | hecho |
 | Módulo ADS1115 (16 bits, I2C, 0x48) | fijo a la placa, cables soldados | **montado (8-oct)**, sin probar |
-| Módulo ACS712-30A | en la pata de motor de una rueda delantera | **cableado (8-oct)**, sin probar |
+| Módulo ACS712-30A | en la pata de motor de una rueda delantera | cableado (8-oct). **Se quemó en el labo (al 15-nov)**: se evalúa cambiarlo por otro sensor, a consultar |
 | Regulador lineal de 5 V para el ACS712 (78L05 o AMS1117-5.0) con sus capacitores | fuera de placa | a confirmar al escribir el código de prueba |
 | Mazo en Y para J3 (Molex KK-254, 4 vías) | mazo | **no hace falta**: el ADS1115 quedó fijo a la placa |
 | Cable trenzado con masa desde Vout_CS (pad de C8 o pin IO33) a AIN0 | agregado de cable, sin cortes | a confirmar al escribir el código de prueba |
@@ -96,7 +96,7 @@ Parte del diseño aunque se monten fuera de la PCB:
 | U2 reajustado a 5 V | ajuste | hecho |
 | Cable de silicona soldado en lugar de J1 (batería) | conector reemplazado por cable | hecho; cable grueso que ya había, con XT60 y fusible (23-oct) |
 | Cable de silicona soldado en lugar de J4..J7 (drivers), con puntera en la bornera del driver | conector reemplazado por cable | cable de ~1,5 mm (23-oct); faltan punteras |
-| Módulo BTS7960 de repuesto | compra | recomendado: uno de los módulos falló |
+| Módulo BTS7960 de repuesto | compra | ya no urgente: el módulo que falló quedó en condiciones (al 15-nov) |
 
 ### Agregados del 23-oct-2026 (planificados)
 
@@ -110,3 +110,13 @@ Parte del diseño aunque se monten fuera de la PCB:
 ---
 
 Valores de fusible y pendientes de especificación en [especificacion.md](especificacion.md); conectores en [mapa-conectores.md](mapa-conectores.md).
+
+### Al 15-nov-2026
+
+| Ítem | Tipo de cambio | Estado |
+|---|---|---|
+| Batería Hemmel BSL-012-007, plomo AGM 12 V / 7 Ah | compra | **comprada** |
+| Schottky en serie entre U2 y VIN del ESP32 | corte y puente + diodo | **colocado y funcionando** |
+| F3..F6 de 5 A | fusibles | **colocados**; tipo a asentar (V14) |
+| PTC de 3 A para F2 | componente a reemplazar | **a comprar** |
+| Sensor que reemplace al ACS712 quemado | compra | **a decidir** |

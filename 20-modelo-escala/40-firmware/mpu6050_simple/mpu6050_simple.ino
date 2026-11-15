@@ -1,7 +1,7 @@
 /*
  * mpu6050_simple.ino — lectura mínima del MPU6050 (GY-521) en la placa del modelo a escala
  *
- * estado: cargado en placa (29-oct): bus OK, ADS1115 responde, MPU no aparece
+ * estado: andando en la placa (al 15-nov). El 29-oct el MPU no aparecía en el bus
  * fecha:  2026-10-29
  *
  * Pines: fuente única en 20-modelo-escala/40-firmware/mapa-gpio.md (SDA = IO21, SCL = IO22).

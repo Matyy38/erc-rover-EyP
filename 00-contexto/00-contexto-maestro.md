@@ -1,9 +1,9 @@
 ---
 titulo: Contexto maestro — Rover ERC, subsistema de Electrónica y Potencia
 owner: Matías Bélico
-version: 2.3
+version: 2.4
 estado: vigente
-fecha: 2026-11-13
+fecha: 2026-11-15
 fuente: 00-contexto-maestro.md (fuente original en 90-archivo/fuentes-originales/), reducido a índice de estado
 alcance: subsistema de potencia y electrónica
 proposito: documento raíz del repo. Estado, conflictos abiertos y próximos pasos. El detalle técnico vive en los archivos que este índice referencia.
@@ -28,7 +28,7 @@ Dos frentes en paralelo:
 | Frente | Propósito | Estado |
 |---|---|---|
 | **Rover final** | El vehículo que compite. 40 kg, bus de 24 V, swerve de 4 ruedas. | Arquitectura mecánica cerrada. Sin motor elegido. |
-| **Modelo a escala** | Instrumento de medición, no maqueta. Mide torque real en piso duro y arena y extrapola al rover final. | PCB fabricada y soldada, con validación parcial. Electrónica sin montar en el modelo. Sin ensayos. |
+| **Modelo a escala** | Instrumento de medición, no maqueta. Mide torque real en piso duro y arena y extrapola al rover final. | PCB fabricada y soldada; motores, encoders, MPU y seta andando. Posicionamiento de la electrónica definido, sin montar en el modelo. Sin ensayos. |
 
 El modelo existe para cerrar la especificación de motores sin comprar motores de tamaño real a
 ciegas. Esa es su única razón de ser, y todo lo que se decide sobre él se juzga contra eso.
@@ -82,8 +82,8 @@ Desarrollo y consulta consolidada a Mecánica en
 | Tema | Estado | Detalle |
 |---|---|---|
 | Escala, motor y qué valida el modelo | **Abierta:** las ruedas miden 150 mm y no corresponden a ~5,5 kg. Decidir reimprimir (recomendado) o lastrar | [10-metodologia-similitud.md](../20-modelo-escala/10-metodologia-similitud.md) §0 |
-| PCB | Fabricada y soldada. Los 4 canales de puente H validados; un módulo BTS7960 falló y está sin revisar. Dos LM2596, cables de potencia soldados, mazos con traba casi terminados, ADS1115 y ACS712 montados sin probar. **Retroalimentación desde el USB del ESP32 (23-oct)**: corrección con Schottky planificada | [00-estado-actual.md](../20-modelo-escala/00-estado-actual.md) |
-| Puntos V1 a V13 | Hipótesis de escritorio pendientes de medir, no defectos. V1 y V3 mitigados sin verificar; V2, V4 y V10 no aplican. V13 (13-nov): F2 caliente con los 4 servos moviéndose juntos, sin medir | [pendientes-de-verificacion.md](../20-modelo-escala/30-pcb/pendientes-de-verificacion.md) |
+| PCB | Fabricada y soldada. **Al 15-nov:** los 4 motores andan con realimentación por PCNT; el BTS7960 que falló quedó en condiciones; MPU6050 andando en la placa; Schottky colocado (resuelta la retroalimentación del USB); seta probada; F3..F6 de 5 A; cables terminados; batería comprada (AGM 12 V / 7 Ah). **Abierto:** servos con F2 mal dimensionado, TMCS sin probar, ACS712 quemado | [00-estado-actual.md](../20-modelo-escala/00-estado-actual.md) |
+| Puntos V1 a V14 | Hipótesis de escritorio pendientes de medir, no defectos. V7 verificado (seta). V1 y V3 mitigados sin verificar; V2, V4 y V10 no aplican. V13: F2 es un X50 (~0,5 A), causa probable, se reemplaza por 3 A. V14: tipo de F3..F6 | [pendientes-de-verificacion.md](../20-modelo-escala/30-pcb/pendientes-de-verificacion.md) |
 | Ensayos | Plan rev. 2.0 (reemplaza al protocolo rev. 1.0). Ninguno corrido | [plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md) |
 | Pinout | Fuente única de verdad | [mapa-gpio.md](../20-modelo-escala/40-firmware/mapa-gpio.md) |
 
@@ -91,10 +91,12 @@ Desarrollo y consulta consolidada a Mecánica en
 
 ## 6. Instrumentación de ensayos — decisiones cerradas
 
-- **ADS1115** para leer el TMCS1126: el conversor interno del ESP32 es el eslabón débil. **Montado
-  fijo a la placa (8-oct), sin probar.** El TMCS quedó confirmado como B4 (100 mV/A).
+- **ADS1115** para leer el TMCS1126: el conversor interno del ESP32 es el eslabón débil. Montado
+  fijo a la placa (8-oct); responde en el bus (29-oct). **TMCS cableado a AIN0 y a IO33, sin probar.**
+  El TMCS quedó confirmado como B4 (100 mV/A).
 - **ACS712 a bordo en la pata de motor de una rueda delantera**, leído por el mismo ADS1115: respaldo
-  y validación. No es un sensor por motor para la extrapolación. **Cableado (8-oct), sin probar.**
+  y validación. No es un sensor por motor para la extrapolación. **Se quemó en el labo (al 15-nov):
+  se evalúa reemplazarlo, a consultar.**
 - **Corrección por ciclo de trabajo:** con PWM el TMCS mide corriente de batería (≈ D · I_motor). Se
   registra D por rueda y se corrige.
 - **Tiro en barra como método primario**, corriente como canal redundante, en simultáneo. Coinciden
@@ -117,27 +119,18 @@ prioridad mínima hasta que vuelva.
 
 ### 7.1 Próxima reunión de laboratorio
 
-El orden importa: nada se conecta a un riel sin medirlo antes, y ningún motor se mueve antes de V1,
-la seta y los fusibles. Del #6 en adelante se puede trabajar en paralelo.
+Hecho al 15-nov: Schottky, seta (V7), fusibles F3..F6 de 5 A, cables, encoders con PCNT, módulo
+BTS7960 que falló y MPU6050 en la placa. Detalle en
+[00-estado-actual.md](../20-modelo-escala/00-estado-actual.md).
 
 | # | Acción | Cómo | Cierra o desbloquea |
 |---|---|---|---|
-| 1 | **Revisar los dos LM2596** | Fuente de banco limitada a ~300 mA, con la salida desconectada. Sin carga: pocos mA de consumo y la salida en lo ajustado. Con carga (~22 Ω en el de 5 V): regulación y rizado. **Si la salida copia la entrada, el módulo está muerto y no se conecta.** Comprar un repuesto igual | Que no lleguen 12 V al ESP32 ni a los servos |
-| 2 | **Corregir la retroalimentación del USB** | Confirmar el camino midiendo el nodo A (≤ 5 s, USB enchufado y sin batería). Schottky entre U2 y VIN (1N5819 o SS34: **llevarlo o comprarlo antes**); U2 a ~5,4 V; VIN en ~5,0 V. Medir en modo diodo si el devkit tiene diodo en VBUS. Verificar: USB sin batería, nodo A en 0 V y módulos fríos | Programar sin riesgo |
+| 1 | **Reemplazar F2 y volver a probar los servos** | PTC de 3 A de mantenimiento en lugar del X50 (~0,5 A). Mismo barrido de los 4 servos: caída sobre F2 al arrancar y a los 3 min. Sumar consigna en rampa y arranque escalonado | V13; V3 |
+| 2 | **TMCS1126: probar y calibrar** | Ya cableado a AIN0 e IO33. I = (V_reposo − V) / 0,1; tarar el cero en cada sesión. Comparar ADS contra ADC del ESP32 y contra multímetro en serie | V9, V11, calibración |
 | 3 | **V1** | Osciloscopio disparado en EN, R_PWM_4 y L_PWM_4 en J19 sin potencia en el driver. Después, con el motor conectado, confirmar que no se mueve al encender | V1 |
-| 4 | **Seta** | Apretarla y confirmar que muere el bus de drivers | V7 |
-| 5 | **Fusibles** | F3..F6 de 7,5 A retardados y fusible general junto al XT60. Antes, medir con calibre el conductor del cable de ~1,5 mm y el de batería: los valores dependen de eso ([mapa-conectores](../20-modelo-escala/30-pcb/mapa-conectores.md)) | Condición para energizar la tracción |
-| 6 | **Rieles con motores y servos andando** | Osciloscopio con masa de resorte corta y disparo en el arranque. Bus de 12 V en los drivers, riel de servos, 5 V y 3,3 V. Sobrepicos y caídas en el arranque y la inversión, rizado de conmutación | V3; validación de los rieles |
-| 7 | **ACS712 por separado** | Puente H y motor en banco. Cero y respuesta contra el multímetro en serie. Cuando funcione, sumar el ADS1115 con [test-ads1115.ino](../20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino). Ninguna entrada del ADS por encima de 3,3 V. El protoboard sirve solo para esta prueba. Con el ADS ya andando, sumar el **MPU6050 en la placa** con [test-mpu6050.ino](../20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino): el escaneo del ADS ya lo tiene que ver en 0x68 | Cadena de medición; MPU6050 en la placa |
-| 8 | **TMCS1126: código de lectura** | I = (V_reposo − V) / 0,1; tarar el cero en cada sesión. Después se prueba todo junto en la placa | V9, V11, calibración |
-| 9 | **Cables** | Largos y punteras. Los cables a los motores, la correspondencia y la rotulación quedan para cuando Mecánica devuelva los motores | Montaje en el modelo |
-| 10 | **Módulo BTS7960 que falló** | En un canal que ya anduvo, con fuente limitada en corriente y cada sentido por separado | Reparar o comprar repuesto |
-| 11 | **Encoders con PCNT, por separado** | Los tres que faltan; el riel ya está probado. Ej4 (diagnóstico de los 8 cables) y checklist de banco (§12) de la [guía PCNT](../20-modelo-escala/20-electronica/PCNT_ESP32_Guia_Rover.pdf). Girar a mano: 5760 cuentas por vuelta de rueda y sentido de cuenta. Con el motor girando, cuentas falsas | Encoders validados |
-
-Códigos: [test-ads1115.ino](../20-modelo-escala/40-firmware/test-ads1115/test-ads1115.ino) para el #7,
-[test-mpu6050.ino](../20-modelo-escala/40-firmware/test-mpu6050/test-mpu6050.ino) y los ejemplos Ej1
-y Ej4 de la [guía PCNT](../20-modelo-escala/20-electronica/PCNT_ESP32_Guia_Rover.pdf) para el #11
-(están en el PDF; los `.ino` no están en el repo). Falta el de lectura del TMCS (#8).
+| 4 | **Rieles con motores y servos andando** | Osciloscopio con masa de resorte corta y disparo en el arranque. Bus de 12 V en los drivers, riel de servos, 5 V y 3,3 V. Sobrepicos y caídas en el arranque y la inversión, rizado de conmutación | V3; validación de los rieles |
+| 5 | **Asentar el tipo de F3..F6** | Leer el rótulo (5x20 rápido o retardado, o de cuchilla) | V14 |
+| 6 | **Reemplazo del ACS712 (quemado)** | **A consultar:** qué sensor y si se mantiene el respaldo en la pata de una rueda. AIN2 y AIN3 del ADS1115 quedan libres | Validación de la corrección por D |
 
 ### 7.2 Después, en prioridad baja
 
@@ -147,7 +140,7 @@ y Ej4 de la [guía PCNT](../20-modelo-escala/20-electronica/PCNT_ESP32_Guia_Rove
 | 2 | **Consulta única a Mecánica**: diámetro, μ, si los 30° son sostenidos, pedidos de ensayo | λ, requisitos de torque, decisión de ruedas | conviene hacer #1 antes |
 | 3 | **Decidir rueda o lastre** (ruedas de 150 mm) | Escala del modelo, Ensayo D | reunión de líderes, #2 |
 | 4 | **Pesar el modelo completo** | λ definitivo | que Mecánica devuelva el modelo |
-| 5 | **Ensayo A** en los 4 motores, con ACS712 y multímetro en serie | K, I₀ y R | 7.1 #7 y #8 |
+| 5 | **Ensayo A** en los 4 motores, con el reemplazo del ACS712 y multímetro en serie | K, I₀ y R | 7.1 #2 y #6 |
 | 6 | **Ensayo A'**, B y C | Corrección por D, K verificada, encoders | #5 |
 | 7 | **D0**, ensayo de método en piso duro | Método del Ensayo D | #1, #6 |
 | 8 | **Reimprimir ruedas** y medirlas con calibre | Cierra la escala | **#2, #3 y #4** |
@@ -155,10 +148,11 @@ y Ej4 de la [guía PCNT](../20-modelo-escala/20-electronica/PCNT_ESP32_Guia_Rove
 | 10 | Motor de reemplazo del 42RBL04A | Rover final | #1 y #2 |
 | 11 | Presupuesto de corriente de los otros subsistemas | Batería y PDB del rover final | otros subsistemas |
 
-Hechos desde la versión anterior (8-oct → 23-oct): mazos con traba casi terminados, con cable de
-~1,5 mm y XT60 con fusible en la entrada de batería. Problema encontrado: retroalimentación desde el
-USB del ESP32, con los LM2596 calentando; corrección planificada. Sin hacer por falta de tiempo:
-BTS7960, rieles, seta, V1, sensores de corriente y PCNT.
+Hechos desde la versión anterior (23-oct → 15-nov): Schottky colocado y funcionando, seta probada,
+F3..F6 de 5 A, cables terminados, los 4 motores con encoders por PCNT, BTS7960 que falló en
+condiciones, MPU6050 en la placa, batería comprada y posicionamiento de la electrónica definido.
+Problemas: F2 mal dimensionado (servos) y ACS712 quemado. Los LM2596 andan con el Schottky puesto;
+su medición con carga y rizado queda dentro de 7.1 #4.
 
 Plan de ensayos del modelo en
 [plan-de-ensayos.md](../20-modelo-escala/50-ensayos/plan-de-ensayos.md). Versión para compartir con

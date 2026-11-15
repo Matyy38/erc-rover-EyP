@@ -1,7 +1,7 @@
 ---
 titulo: Arquitectura eléctrica de la PCB del modelo
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección arquitectura-electrica; reuniones de laboratorio del 8-oct y del 23-oct-2026
 ---
 
@@ -14,7 +14,7 @@ del ESP32 y la estrategia de arranque seguro **no están acá**: viven en
 ### Cadena de potencia
 
 Diagrama al 26-oct-2026: ya muestra los dos LM2596 con rieles separados (8-oct) y el Schottky
-planificado (23-oct). Q1 sigue dibujado, pero está puenteado desde el 27-sep (ver los cambios
+**colocado y funcionando (al 15-nov)**. Q1 sigue dibujado, pero está puenteado desde el 27-sep (ver los cambios
 debajo del diagrama).
 
 ```
@@ -26,7 +26,7 @@ debajo del diagrama).
                    R14 10k      |
                    D4 16V       +--- JP1 ---+--- C7 1000u
                     (gate)      |           |
-                                |           +--- U2 LM2596 (5 V) --+--> [Schottky, planificado] --> ESP1.19 (VIN del devkit)
+                                |           +--- U2 LM2596 (5 V) --+--> [Schottky] --> ESP1.19 (VIN del devkit)
                                 |           |                      +--- C9 100u + C10 1u
                                 |           |
                                 |           +--- LM2596 de servos (7,2 V, sin ref.) --> F2 (PTC) --> C1 1000u --> J12/J13/J14/J17 (4 servos)
@@ -62,6 +62,11 @@ debajo del diagrama).
 > - La batería de plomo alimenta el bus de tracción **sin regular** (10,5 a 14,4 V). Los ensayos lo
 >   compensan con lazo cerrado de velocidad y registro de tensión y ciclo de trabajo, no con un
 >   convertidor. Ver [50-ensayos/plan-de-ensayos.md](../50-ensayos/plan-de-ensayos.md).
+> - **Batería comprada (al 15-nov-2026):** Hemmel BSL-012-007, plomo sellado AGM, 12 V / 7 Ah
+>   (régimen de 20 h). Rótulo: carga en ciclo 14,5 a 14,9 V, flotación 13,5 a 13,8 V, corriente de
+>   carga máxima 2,1 A. Cargarla **fuera del rover**: a 14,9 V el TVS D1 (SM6T15A) queda más cerca de
+>   su ruptura que con los 14,4 V supuestos en V5. El divisor de V_bat llega a 2,69 V con 14,9 V,
+>   todavía dentro de los ±4,096 V del ADS1115 y por debajo de 3,3 V.
 
 > **Cambios del 8-oct-2026 sobre este diagrama:**
 > - **Segundo LM2596, solo para los servos, en 7,2 V.** Mismo módulo que U2, sin referencia en el
@@ -94,7 +99,7 @@ debajo del diagrama).
 > **Cómo se confirma:** con la batería desconectada y el USB enchufado, medir el nodo A durante no
 > más de 5 s. Si hay varios voltios, el camino es este.
 >
-> **Corrección planificada (corte y puente + diodo):** un Schottky en serie entre la salida de U2 y
+> **Corrección aplicada (corte y puente + diodo), colocada y funcionando al 15-nov-2026:** un Schottky en serie entre la salida de U2 y
 > el pin 19, con el ánodo del lado de U2. Puede ser 1N5819 (THT, más fácil para un puente) o SS34
 > (SMA). U2 se sube a ~5,4 V para que VIN quede en ~5,0 V, porque el diodo cae 0,3 a 0,4 V a la
 > corriente del ESP32. Sin ese ajuste, el AMS1117 queda con 1,3 V de margen, justo en su caída
@@ -112,10 +117,10 @@ debajo del diagrama).
 
 | Riel | Origen | Tensión real | Cargas | Protección propia |
 |---|---|---|---|---|
-| Batería | cable soldado en lugar de J1 (8-oct), XT60 del lado de la batería | 10,5 - 14,4 V (plomo-ácido 12 V / 7 Ah) | todo | Fusible aéreo (off-board) |
+| Batería | cable soldado en lugar de J1 (8-oct), XT60 del lado de la batería | 10,5 - 14,4 V (plomo-ácido AGM 12 V / 7 Ah, Hemmel BSL-012-007, comprada al 15-nov) | todo | Fusible aéreo (off-board) |
 | Nodo A | salida de Q1 (**Q1 puenteado**: nodo A = batería) | Vbat | los dos LM2596, bobina del relé, LED | D1 (TVS); polaridad por conector de un solo sentido |
-| +12V conmutado | contacto NO de K1, vía U3 | Vbat - caída del relé - 0,7 mΩ del sensor | 4 drivers, C2, divisor de batería | F3..F6 (uno por driver) |
-| "+5V" (nombre de red) | U2 LM2596 | **5 V** (8-oct); ~5,4 V con el Schottky | solo ESP32 VIN | ninguna. Schottky hacia VIN planificado (23-oct) |
+| +12V conmutado | contacto NO de K1, vía U3 | Vbat - caída del relé - 0,7 mΩ del sensor | 4 drivers, C2, divisor de batería | F3..F6 (uno por driver), 5 A colocados al 15-nov |
+| "+5V" (nombre de red) | U2 LM2596 | **5 V** (8-oct); ~5,4 V con el Schottky | solo ESP32 VIN | ninguna. Schottky hacia VIN colocado (al 15-nov) |
 | Riel de servos | segundo LM2596 (8-oct) detrás de F2 | 7,2 V menos la caída del PTC | 4 servos | F2 (PTC rearmable) |
 | +3,3 V | AMS1117 del devkit ESP32 | 3,3 V | ESP32, TMCS, MPU, encoders, pull-ups, enables de los BTS, 3 NLAS | ninguna |
 

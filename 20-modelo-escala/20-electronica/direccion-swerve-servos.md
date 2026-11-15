@@ -1,7 +1,7 @@
 ---
 titulo: Dirección swerve y riel de servos
 estado: vigente
-fecha: 2026-10-21
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección direccion-swerve-servos; reunión de laboratorio del 8-oct-2026
 ---
 
@@ -33,6 +33,12 @@ fijarla.
 > ensayos que no hay reinicios por brownout. El análisis de abajo describe la situación previa y
 > sigue valiendo para el riel de servos: con un convertidor de 3 A, cuatro servos trabados lo hunden
 > igual, y pierden torque.
+
+> **F2 mal dimensionado (al 15-nov-2026, V13).** El PTC montado está rotulado **X50**, ~0,5 A de
+> mantenimiento. Los 4 servos moviéndose sin carga ya piden 2 a 3,6 A, así que F2 entra en disparo y
+> los servos pierden velocidad y fuerza: coincide con lo observado el 13-nov. Corrección: reemplazarlo
+> por un PTC de **3 A de mantenimiento** (componente a reemplazar, sin cortes). Los servos se vuelven a
+> probar con el PTC nuevo, y conviene sumar consigna en rampa y arranque escalonado en el firmware.
 
 | Dato | Valor |
 |---|---|

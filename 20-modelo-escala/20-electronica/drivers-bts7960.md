@@ -1,7 +1,7 @@
 ---
 titulo: Drivers BTS7960 del modelo a escala
 estado: vigente
-fecha: 2026-10-21
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección drivers-bts7960; reunión de laboratorio del 8-oct-2026
 ---
 
@@ -9,7 +9,9 @@ fuente: pcb-modelo-escala.md, sección drivers-bts7960; reunión de laboratorio 
 
 Validado (8-oct-2026): **los cuatro canales de la placa para los puentes H funcionan.** Se probaron
 con un módulo BTS7960 y un motor conectados directo. De los módulos BTS7960, **uno no funcionó**: la
-falla es del módulo, no de la PCB, porque todos los canales de la placa andan. Hay que verificarlo.
+falla es del módulo, no de la PCB, porque todos los canales de la placa andan. **Al 15-nov-2026 ese
+módulo quedó en condiciones**, y los cuatro motores andan con sus encoders desde
+[Motores_Teclado.ino](../40-firmware/Motores_Teclado/Motores_Teclado.ino).
 Los drivers todavía no están montados en el modelo ni numerados, así que el módulo que falló no
 tiene número de driver asignado: conviene marcarlo físicamente.
 

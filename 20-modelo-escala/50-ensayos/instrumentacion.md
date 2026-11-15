@@ -1,7 +1,7 @@
 ---
 titulo: Instrumentación de ensayos del modelo a escala
 estado: vigente
-fecha: 2026-11-13
+fecha: 2026-11-15
 fuente: metodologia-modelo-escala-y-presupuesto-pdb.md §2, §3.3, §3.4 y riesgos de medición de §5; decisiones del 27-sep-2026 (ADS1115 comprado, ACS712 a bordo)
 ---
 
@@ -43,8 +43,9 @@ microcontrolador.
 | AIN3 | a confirmar | — | — |
 
 > **Cambio del 13-nov-2026.** AIN1 pasó a leer V_bat, para comparar el ADC del ESP32 contra el
-> ADS1115 sobre la misma tensión y detectar falta de linealidad. Queda **a confirmar dónde quedó el
-> ACS712** y qué hay en AIN2 y AIN3. AIN0 pasó de ±2,048 V a ±4,096 V: con ±2,048 V satura a unos
+> ADS1115 sobre la misma tensión y detectar falta de linealidad. **El ACS712 se quemó (al 15-nov)**
+> y se evalúa reemplazarlo; AIN2 y AIN3 quedan libres hasta decidirlo. El TMCS quedó cableado a AIN0
+> y a IO33, sin probar. AIN0 pasó de ±2,048 V a ±4,096 V: con ±2,048 V satura a unos
 > −4 A de regeneración (salida por encima de 2,048 V), que aparece justo en las pruebas de inversión y
 > de frenado. A 1,25 mA por cuenta sigue sobrando para medir en amperes. AIN1 necesita ±4,096 V: con
 > la batería cargada (14,4 V) el nodo llega a 2,6 V.

@@ -1,8 +1,8 @@
 ---
 titulo: Modelo a escala — estado actual de la placa
 estado: vigente
-fecha: 2026-10-26
-fuente: pcb-modelo-escala.md (encabezado, estado de validación y cambios respecto del PDF); reuniones de laboratorio del 8-oct y del 23-oct-2026
+fecha: 2026-11-15
+fuente: pcb-modelo-escala.md (encabezado, estado de validación y cambios respecto del PDF); reuniones de laboratorio del 8-oct y del 23-oct-2026; avances reportados al 15-nov-2026
 ---
 
 # PCB del modelo a escala (PDB + control) — estado actual
@@ -20,22 +20,22 @@ planificación del 17-ago-2026 dice otra cosa, manda el `.sch` y se aclara la di
 
 ## Estado de validación
 
-La placa ya tuvo pruebas parciales con resultado correcto. Al 23-oct: los cuatro canales de los
-puentes H funcionan, hay un encoder validado, el MPU6050 está probado en banco y los mazos con traba
-están casi terminados. **Problema abierto: retroalimentación desde el USB del ESP32** (ver abajo).
-La electrónica todavía no está montada en el modelo: el modelo y parte de los motores los tiene
-Mecánica.
+Al 15-nov-2026: los cuatro motores andan con realimentación de posición por PCNT, el MPU6050 anda
+en la placa, el Schottky resolvió la retroalimentación desde el USB, la seta corta, F3..F6 de 5 A
+están colocados y todos los cables están terminados. La batería está comprada y el posicionamiento
+de la electrónica en el modelo ya está definido. **Abierto:** servos a probar de nuevo con F2
+reemplazado (V13), TMCS sin probar y ACS712 quemado, a reemplazar.
 
 | Bloque | Estado | Detalle |
 |---|---|---|
-| Arquitectura eléctrica y rieles | **dos LM2596 desde el 8-oct** (5 V lógica, 7,2 V servos), sin medir. **Retroalimentación desde el USB (23-oct)**: corrección con Schottky planificada | [20-electronica/arquitectura-electrica.md](20-electronica/arquitectura-electrica.md) |
-| Encoders y PCNT | **un canal validado**, faltan tres (se prueban con PCNT directo) | [20-electronica/encoders-pcnt.md](20-electronica/encoders-pcnt.md) |
-| Drivers BTS7960 | **los 4 canales de la placa validados** (8-oct). Un módulo BTS7960 falló: a verificar | [20-electronica/drivers-bts7960.md](20-electronica/drivers-bts7960.md) |
-| Dirección swerve y servos | riel propio desde el 8-oct (V3 mitigado, sin verificar). Servos sin ensayar | [20-electronica/direccion-swerve-servos.md](20-electronica/direccion-swerve-servos.md) |
-| Sensado de corriente | TMCS confirmado B4, sin calibrar. ADS1115 fijo a la placa y ACS712 cableado (8-oct), sin probar | [20-electronica/sensado-corriente.md](20-electronica/sensado-corriente.md) |
-| MPU6050 | **funciona** en una prueba de banco (8-oct), todavía no en la placa | [40-firmware/test-mpu6050/](40-firmware/test-mpu6050/test-mpu6050.ino) |
+| Arquitectura eléctrica y rieles | dos LM2596 desde el 8-oct (5 V lógica, 7,2 V servos). **Schottky entre U2 y VIN colocado y funcionando (al 15-nov)**: resuelta la retroalimentación desde el USB. Batería comprada: Hemmel BSL-012-007, AGM 12 V / 7 Ah. Rieles sin medir con osciloscopio | [20-electronica/arquitectura-electrica.md](20-electronica/arquitectura-electrica.md) |
+| Encoders y PCNT | **los 4 validados (al 15-nov)**: motores andando con realimentación de posición por PCNT | [20-electronica/encoders-pcnt.md](20-electronica/encoders-pcnt.md) |
+| Drivers BTS7960 | **los 4 canales de la placa validados** (8-oct). El módulo que había fallado quedó en condiciones (al 15-nov) | [20-electronica/drivers-bts7960.md](20-electronica/drivers-bts7960.md) |
+| Dirección swerve y servos | riel propio desde el 8-oct (V3 mitigado, sin verificar). **A probar de nuevo:** F2 es un X50 (~0,5 A), mal dimensionado; se reemplaza por un PTC de 3 A (V13) | [20-electronica/direccion-swerve-servos.md](20-electronica/direccion-swerve-servos.md) |
+| Sensado de corriente | TMCS (B4) cableado a AIN0 del ADS1115 y a IO33, sin probar ni calibrar. **ACS712 quemado (al 15-nov)**: se evalúa reemplazarlo, a consultar | [20-electronica/sensado-corriente.md](20-electronica/sensado-corriente.md) |
+| MPU6050 | **andando en la placa (al 15-nov)** | [40-firmware/mpu6050_simple/](40-firmware/mpu6050_simple/mpu6050_simple.ino) |
 | Protecciones y desacople | montado, Q1 puenteado, cuatro puntos abiertos | [20-electronica/protecciones-desacople.md](20-electronica/protecciones-desacople.md) |
-| Conectores de potencia | J1 y J4..J7 reemplazados por cable soldado; batería por XT60 con fusible. Mazos con traba casi terminados (23-oct); faltan largos definitivos, punteras y los cables a los motores | [30-pcb/mapa-conectores.md](30-pcb/mapa-conectores.md) |
+| Conectores de potencia | J1 y J4..J7 reemplazados por cable soldado; batería por XT60 con fusible. **Todos los cables terminados (al 15-nov)**, salvo el del ACS712. F3..F6 de 5 A colocados. La seta se probó y corta (V7) | [30-pcb/mapa-conectores.md](30-pcb/mapa-conectores.md) |
 | Mapa de GPIO y arranque seguro | documentado, V1 mitigado con pull-up y sin verificar | [40-firmware/mapa-gpio.md](40-firmware/mapa-gpio.md) |
 
 ---
@@ -105,7 +105,28 @@ Los motivos de cada descarte están en
 
 ---
 
-## Los puntos V1 a V12
+## Al 15-nov-2026
+
+Avances reportados después de la reunión del 23-oct (labos del 29-oct al 13-nov):
+
+| Tema | Resultado | Tipo |
+|---|---|---|
+| Schottky entre U2 y VIN | colocado; todo anda bien. Cierra la retroalimentación desde el USB | corte y puente + diodo, hecho |
+| Motores y encoders | los 4 andan con realimentación de posición por PCNT | validación |
+| Módulo BTS7960 que había fallado | en condiciones | reparado |
+| MPU6050 | anda en la placa | validación |
+| Seta | probada: corta el bus de drivers (V7) | validación |
+| F3..F6 | 5 A colocados; tipo a asentar (V14) | fusibles |
+| Cables | todos terminados, salvo el del ACS712 | mazos |
+| Batería | comprada: Hemmel BSL-012-007, plomo AGM 12 V / 7 Ah | compra |
+| Posicionamiento de la electrónica en el modelo | definido | mecánica de montaje |
+| Servos | F2 es un X50 (~0,5 A), mal dimensionado: probable causa de V13. A reemplazar por PTC de 3 A y volver a probar | componente a reemplazar |
+| TMCS1126 | cableado a AIN0 del ADS1115 y a IO33; falta probarlo | sin probar |
+| ACS712 | **se quemó** por un error en el laboratorio. Se evalúa cambiarlo por otro sensor: **queda para consultar** | a decidir |
+
+Sin novedades: medición de rieles con osciloscopio, V1 y revisión de los LM2596 en vacío y con carga.
+
+## Los puntos V1 a V14
 
 A lo largo de la documentación hay referencias del tipo (V1), (V2)... Son puntos de análisis de
 escritorio que **quedan pendientes de confirmar midiendo, no defectos verificados**. Varios pueden

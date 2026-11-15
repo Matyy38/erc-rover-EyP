@@ -1,7 +1,7 @@
 ---
 titulo: Mapa de conectores de la PCB del modelo
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección mapa-conectores; reuniones de laboratorio del 8-oct y del 23-oct-2026
 ---
 
@@ -76,10 +76,21 @@ sección de 1,5 mm². La diferencia es grande:
 |---|---|---|---|
 | Diámetro del conductor | ~1,8 mm² | ~15 AWG | sí, con margen |
 | Sección de 1,5 mm² | 1,5 mm² | ~16 AWG | sí, con margen |
-| Diámetro exterior con aislación | ~0,3 mm² | ~22 AWG | **no**: ~7 A en cableado de chasis, por debajo del fusible. Habría que rehacer los tramos placa a driver con cable más grueso, porque bajar el fusible a 5 A lo haría cortar en cada bloqueo de 5,5 A |
+| Diámetro exterior con aislación | ~0,3 mm² | ~22 AWG | no con 7,5 A (~7 A en cableado de chasis). **Con los 5 A colocados, sí** |
 
 Se resuelve midiendo con calibre el conductor pelado. Lo mismo para el cable de batería: con 14 AWG
 o más, el fusible general va de 20 A retardado.
+
+**Lo que quedó (al 15-nov-2026): F3..F6 de 5 A, uno por driver, y todos los cables terminados**
+(salvo el del ACS712, que se quemó; ver [sensado-corriente](../20-electronica/sensado-corriente.md)).
+Con 5 A el fusible protege al cable en las tres lecturas de la tabla, incluida la de ~22 AWG, así que
+deja de importar cuál es. Corrección de lo que decía esta sección antes: un bloqueo de 5,5 A es
+1,1 veces la nominal, y los fusibles de 5x20 (IEC 60127) y los de cuchilla soportan eso sin cortar
+durante mucho tiempo; recién a 1,35-2 veces la nominal cortan en minutos. Con la batería recién
+cargada (14,4 V) el bloqueo sube a ~6,6 A (1,3 veces): aguanta los segundos de un bloqueo de
+ensayo, pero un bloqueo sostenido puede cortar. Eso es aceptable y es lo que tiene que pasar. Falta
+asentar el tipo (5x20 rápido o retardado, o de cuchilla): queda como **V14** en
+[pendientes-de-verificacion](pendientes-de-verificacion.md).
 
 ### Márgenes de los conectores de potencia (V4) — ya no aplica (8-oct-2026)
 
@@ -108,7 +119,7 @@ Del PDF, siguen vigentes:
 | Tramo | Calibre | Conector |
 |---|---|---|
 | Batería a PDB | recomendado 14 AWG silicona. Usado: cable grueso que ya había (23-oct) | XT60 con fusible del lado de la batería; soldado a la placa |
-| PDB a drivers | recomendado 18 AWG silicona. Usado: ~1,5 mm (23-oct), a asentar | soldado a la placa; puntera en la bornera del driver |
+| PDB a drivers | recomendado 18 AWG silicona. Usado: ~1,5 mm (23-oct), a asentar; terminado al 15-nov con F3..F6 de 5 A | soldado a la placa; puntera en la bornera del driver |
 | Driver a motor | 16-18 AWG silicona | terminales pala o soldadura |
 | PDB a servos | 20-22 AWG | Molex KK / conector servo |
 | Señales PWM | 22-24 AWG | Molex KK-254 |

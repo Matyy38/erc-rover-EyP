@@ -1,14 +1,16 @@
 ---
 titulo: Encoders en cuadratura y periférico PCNT
 estado: vigente
-fecha: 2026-10-26
+fecha: 2026-11-15
 fuente: pcb-modelo-escala.md, sección encoders-pcnt
 ---
 
 # Encoders y PCNT
 
-Validado: se probó un encoder y funcionó correctamente. Los otros tres se prueban directamente con
-el periférico PCNT (pendiente al 8-oct-2026). Guía de uso del PCNT para el rover en
+**Validado (al 15-nov-2026): los cuatro motores andan con realimentación de posición leída por
+PCNT.** Código de banco: [Motores_Teclado.ino](../40-firmware/Motores_Teclado/Motores_Teclado.ino)
+(los 4 BTS7960 desde el monitor serie con telemetría de los 4 encoders) y los ejemplos de
+[40-firmware/pcnt/](../40-firmware/pcnt/). Guía de uso del PCNT para el rover en
 [PCNT_ESP32_Guia_Rover.pdf](PCNT_ESP32_Guia_Rover.pdf).
 
 ### Interfaz física

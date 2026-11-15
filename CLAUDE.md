@@ -89,7 +89,7 @@ superadas, incluidas las fuentes originales de la migración.
 
 - **El mapa de GPIO es fuente única de verdad.** Si una tabla de pines aparece en otro archivo, ese
   archivo enlaza al mapa, no lo copia. Duplicar el pinout es la forma más probable de romper algo.
-- **Los puntos V1 a V12 son hipótesis, no defectos.** Nunca los trates como fallas confirmadas. Al
+- **Los puntos V1 a V14 son hipótesis, no defectos.** Nunca los trates como fallas confirmadas. Al
   cerrar uno, actualizá su fila y movelo a resuelto con el resultado de la medición.
 - **La placa ya está fabricada y soldada.** Cualquier propuesta de cambio tiene que decir si es un
   corte y un puente, un componente a reemplazar, o un rediseño. El costo de la corrección importa
